@@ -17,6 +17,7 @@ function AllCards(props) {
     )
       .then((res) => res.json())
       .then((data) => setIndCardsList(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // console.log('individual card list', indCardsList);
