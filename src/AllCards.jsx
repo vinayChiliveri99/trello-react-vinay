@@ -1,30 +1,41 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
 import Card from './components/Card';
-function AllCards(props) {
-  // use this list id, to fetch the cards inside the list.
-  const { listId } = props;
-  // console.log(listId);
 
-  const [indCardsList, setIndCardsList] = useState([]);
+function AllCards(props) {
+  const { indCardsList, setIndCardsList } = props;
 
   const ApiKey = `8595f1e78e95986a8b549202c4381a5f`;
   const ApiToken = `ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889`;
 
-  useEffect(() => {
+  function handleArchiveCard(id) {
+    // console.log('card clicked: ', id);
+    // setIsOptionsOpen(false);
     fetch(
-      `https://api.trello.com/1/lists/${listId}/cards?key=${ApiKey}&token=${ApiToken}`
+      `https://api.trello.com/1/cards/${id}?key=${ApiKey}&token=${ApiToken}`,
+      {
+        method: 'DELETE',
+      }
     )
-      .then((res) => res.json())
-      .then((data) => setIndCardsList(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      .then((response) => {
+        if (response.ok) {
+          setIndCardsList(
+            indCardsList.filter((ele) => ele.id !== id)
+          );
+        } else {
+          throw new Error('error while deleting a card');
+        }
+      })
+      .catch((err) => console.error(err));
+  }
 
-  // console.log('individual card list', indCardsList);
   return (
-    <section>
+    <section style={{ maxHeight: '400px', overflowY: 'auto' }}>
       {indCardsList.map((ele) => (
-        <Card key={ele.id} cardData={ele} />
+        <Card
+          key={ele.id}
+          cardData={ele}
+          handleArchiveCard={handleArchiveCard}
+        />
       ))}
     </section>
   );
