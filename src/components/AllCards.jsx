@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import Card from './components/Card';
+import Card from './Card';
 
 function AllCards(props) {
   const { indCardsList, setIndCardsList } = props;

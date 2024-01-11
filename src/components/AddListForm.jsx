@@ -23,6 +23,7 @@ function AddListForm({ onCancel, onListNameSubmit }) {
         backgroundColor: 'white',
         borderRadius: '15px',
         padding: '10px',
+        flexShrink: '0',
       }}
     >
       <form onSubmit={handleSubmit}>

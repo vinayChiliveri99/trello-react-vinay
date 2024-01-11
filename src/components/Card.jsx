@@ -1,14 +1,24 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
+import CardDetail from './CardDetail';
 
 function Card(props) {
   const { cardData, handleArchiveCard } = props;
+  const [anchorEl, setAnchorEl] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
 
   function handleCardOptions() {
     setIsOptionsOpen((prev) => !prev);
   }
+
+  const handleClick = (event) => {
+    setAnchorEl((prev) => (prev ? null : event.currentTarget));
+  };
+
+  const handleClose = () => {
+    setAnchorEl(false);
+  };
 
   return (
     <div
@@ -22,9 +32,12 @@ function Card(props) {
           ? '0px 0px 10px 0px rgba(0,0,0,0.5)'
           : 'none',
         transition: 'box-shadow 0.3s',
+        border: isHovered ? '1px solid blue' : '',
+        borderRadius: isHovered ? '5px' : '',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
     >
       {cardData.name}
       {isHovered && (
@@ -58,6 +71,13 @@ function Card(props) {
           </span>
         </div>
       )}
+
+      <CardDetail
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        cardData={cardData}
+      />
     </div>
   );
 }

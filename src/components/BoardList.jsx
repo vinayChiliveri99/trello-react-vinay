@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import ArchivePopOver from './ArchivePopOver';
-import AllCards from '../AllCards';
+import AllCards from './AllCards';
 import AddCard from './AddCard';
 
 function BoardList(props) {

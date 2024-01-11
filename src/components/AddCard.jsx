@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import CardInput from '../CardInput';
+import CardInput from './CardInput';
 
 function AddCard(props) {
   const { listId, setIndCardsList, indCardsList } = props;

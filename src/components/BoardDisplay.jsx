@@ -56,6 +56,7 @@ function BoardDisplay() {
     backgroundColor: 'white',
     borderRadius: '15px',
     cursor: 'pointer',
+    flexShrink: '0',
   };
 
   function handleCreateNewList() {

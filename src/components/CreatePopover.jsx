@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { useState } from 'react';
 import { Button, Container, Popover } from '@mui/material';
 import cardsPhoto from '../../assets/cards.png';
 import { useNavigate } from 'react-router-dom';
@@ -7,19 +8,21 @@ function CreatePopover(props) {
   const navigate = useNavigate();
   const { createPopoverAnchor, handleCreateClose } = props;
 
+  const [boardName, setBoardName] = useState('');
+
   function handleCreateBoard(e) {
     e.preventDefault();
-    const title = document.getElementsByName('boardName')[0].value;
-    if (title.length === 0) {
+    if (boardName.length === 0) {
       console.log('give some value');
       return;
     }
-    console.log(title);
-    document.getElementsByName('boardName')[0].value = '';
+    console.log(boardName);
+    setBoardName('');
+
     handleCreateClose();
 
     fetch(
-      `https://api.trello.com/1/boards/?name=${title}&key=8595f1e78e95986a8b549202c4381a5f&token=ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889`,
+      `https://api.trello.com/1/boards/?name=${boardName}&key=8595f1e78e95986a8b549202c4381a5f&token=ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889`,
       {
         method: 'POST',
       }
@@ -30,7 +33,7 @@ function CreatePopover(props) {
       })
       .then((data) => {
         console.log(data.id);
-        // redirecting to open the board in new page
+        // redirecting to open the board in a new page
         navigate(`/boards/${data.id}`);
       })
       .catch((error) =>
@@ -75,6 +78,8 @@ function CreatePopover(props) {
             type="text"
             name="boardName"
             autoComplete="off"
+            value={boardName}
+            onChange={(e) => setBoardName(e.target.value)}
             style={{ width: '250px', margin: '10px 0 0 0' }}
           />
           <p>👋 Board title is required</p>
