@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import WorkSpaceCard from './WorkSpaceCard';
 import { Card, CardActionArea, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { getAllBoards } from '../API';
 
 function Boards(props) {
   const { handleCreateClick } = props;
@@ -10,17 +11,12 @@ function Boards(props) {
 
   const navigate = useNavigate();
 
+  // getting the boards data to display boards.
+  // getAllBoards is a get req present in API.js
   useEffect(() => {
-    function fetchBoards() {
-      fetch(
-        'https://api.trello.com/1/members/6597ebc98f968c8e9bd02250/boards?key=8595f1e78e95986a8b549202c4381a5f&token=ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889'
-      )
-        .then((res) => res.json())
-        .then((data) => setBoardsData(data))
-        .catch((err) => console.log(err));
-    }
-
-    fetchBoards();
+    getAllBoards()
+      .then((data) => setBoardsData(data))
+      .catch((err) => console.log(err));
   }, []);
 
   const createCardStyle = {

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button, Container, Popover } from '@mui/material';
 import cardsPhoto from '../../assets/cards.png';
 import { useNavigate } from 'react-router-dom';
+import { addNewBoard } from '../API';
 
 function CreatePopover(props) {
   const navigate = useNavigate();
@@ -12,33 +13,24 @@ function CreatePopover(props) {
 
   function handleCreateBoard(e) {
     e.preventDefault();
+
     if (boardName.length === 0) {
-      console.log('give some value');
+      // console.log('give some value');
       return;
     }
-    console.log(boardName);
+    // resetting the input value to be empty after submit & closing the popover
     setBoardName('');
-
     handleCreateClose();
 
-    fetch(
-      `https://api.trello.com/1/boards/?name=${boardName}&key=8595f1e78e95986a8b549202c4381a5f&token=ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889`,
-      {
-        method: 'POST',
-      }
-    )
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('Failed to create board');
-      })
+    // addNewBoard is in API.js file
+    addNewBoard(boardName)
       .then((data) => {
-        console.log(data.id);
         // redirecting to open the board in a new page
         navigate(`/boards/${data.id}`);
       })
-      .catch((error) =>
-        console.error('Error while fetching boards:', error)
-      );
+      .catch((error) => {
+        console.log('error while creating a new board', error);
+      });
   }
 
   const containerStyle = {

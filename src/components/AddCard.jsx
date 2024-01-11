@@ -21,7 +21,12 @@ function AddCard(props) {
 
   return (
     <div>
-      <div onClick={handleAddCardClick}>+ Add a card</div>
+      <div
+        onClick={handleAddCardClick}
+        style={{ cursor: 'pointer', padding: '15px' }}
+      >
+        + Add a card
+      </div>
       {isCardOpen && (
         <CardInput
           listId={listId}

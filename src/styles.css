@@ -16,6 +16,7 @@
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
+  cursor: pointer;
   display: block;
   width: 100px;
   height: 50px;

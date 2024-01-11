@@ -42,7 +42,11 @@ function AddListForm({ onCancel, onListNameSubmit }) {
         <button
           type="button"
           onClick={onCancel}
-          style={{ border: 'none', backgroundColor: 'inherit' }}
+          style={{
+            border: 'none',
+            backgroundColor: 'inherit',
+            cursor: 'pointer',
+          }}
         >
           X
         </button>

@@ -9,12 +9,16 @@ import {
 } from '@mui/material';
 import BoardList from './BoardList';
 import AddListForm from './AddListForm';
+import {
+  archiveList,
+  createNewList,
+  getBoardDetails,
+  getListsInABoard,
+} from '../API';
 
 function BoardDisplay() {
   // this is the board id
   let { id } = useParams();
-  const ApiKey = `8595f1e78e95986a8b549202c4381a5f`;
-  const ApiToken = `ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889`;
 
   const [listsInBoard, setListsInBoard] = useState([]);
   const [boardDetails, setBoardDetails] = useState({});
@@ -23,11 +27,10 @@ function BoardDisplay() {
   // console.log(listsInBoard);
 
   useEffect(() => {
+    // getting the lists present in a board.
+
     function fetchListsInBoard() {
-      fetch(
-        `https://api.trello.com/1/boards/${id}/lists?key=${ApiKey}&token=${ApiToken}`
-      )
-        .then((res) => res.json())
+      getListsInABoard(id)
         .then((data) => setListsInBoard(data))
         .catch((err) =>
           console.log('Error while fetching lists in a board', err)
@@ -36,18 +39,16 @@ function BoardDisplay() {
 
     fetchListsInBoard();
 
+    // getting board details
+
     function fetchBoardDetails() {
-      fetch(
-        `https://api.trello.com/1/boards/${id}?key=${ApiKey}&token=${ApiToken}`
-      )
-        .then((res) => res.json())
+      getBoardDetails(id)
         .then((data) => setBoardDetails(data))
         .catch((err) =>
           console.log('error while fetching board details', err)
         );
     }
     fetchBoardDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const newListStyle = {
@@ -69,32 +70,20 @@ function BoardDisplay() {
 
   // to handle the submitted list name
   const handleAddListSubmit = (listName) => {
-    console.log(listName);
-    fetch(
-      `https://api.trello.com/1/lists?name=${listName}&idBoard=${id}&key=${ApiKey}&token=${ApiToken}`,
-      {
-        method: 'POST',
-      }
-    )
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('Failed to create list');
-      })
-      .then((data) => setListsInBoard([...listsInBoard, data]));
+    // console.log(listName);
 
-    // setIsAddingList(false);
+    // creating a new list in a board
+
+    createNewList(listName, id)
+      .then((data) => setListsInBoard([...listsInBoard, data]))
+      .catch((err) =>
+        console.log('error while creating the list', err)
+      );
   };
 
   function handleArchive(listId) {
     // console.log(listId);
-    fetch(
-      `https://api.trello.com/1/lists/${listId}/closed?key=${ApiKey}&token=${ApiToken}&value=true`,
-      { method: 'PUT' }
-    )
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('Failed to archive list');
-      })
+    archiveList(listId)
       .then((data) => {
         if (data.id) {
           setListsInBoard(

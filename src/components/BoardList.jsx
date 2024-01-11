@@ -9,6 +9,7 @@ import {
 import ArchivePopOver from './ArchivePopOver';
 import AllCards from './AllCards';
 import AddCard from './AddCard';
+import { fetchCardsList } from '../API';
 
 function BoardList(props) {
   const { ele, handleArchive } = props;
@@ -23,25 +24,19 @@ function BoardList(props) {
     setAnchorEl(null);
   };
 
+  // getting the cards of a list.
   useEffect(() => {
-    const ApiKey = `8595f1e78e95986a8b549202c4381a5f`;
-    const ApiToken = `ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889`;
+    const fetchData = () => {
+      fetchCardsList(ele.id)
+        .then((data) => {
+          setIndCardsList(data);
+        })
+        .catch((error) => {
+          console.log('error while setting cards data', error);
+        });
+    };
 
-    fetch(
-      `https://api.trello.com/1/lists/${ele.id}/cards?key=${ApiKey}&token=${ApiToken}`
-    )
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      })
-      .then((data) => {
-        setIndCardsList(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching cards:', error);
-      });
+    fetchData();
   }, [ele.id]);
 
   const listStyle = {
@@ -81,6 +76,7 @@ function BoardList(props) {
         <AllCards
           indCardsList={indCardsList}
           setIndCardsList={setIndCardsList}
+          listName={ele.name}
         />
         <AddCard
           listId={ele.id}

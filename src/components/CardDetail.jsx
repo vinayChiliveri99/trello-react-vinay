@@ -10,6 +10,7 @@ export default function CardDetail({
   anchorEl,
   onClose,
   cardData,
+  listName,
 }) {
   const [checkListData, setCheckListData] = useState([]);
   const [addNewCheckList, setAddNewCheckList] = useState(false);
@@ -67,7 +68,7 @@ export default function CardDetail({
           <p style={{ marginBottom: '-10px', fontWeight: '700' }}>
             {cardData.name}
           </p>
-          <p>in list ----</p>
+          <p>in list {listName}</p>
         </div>
         <p onClick={onClose}>X</p>
       </header>

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CardDetail from './CardDetail';
 
 function Card(props) {
-  const { cardData, handleArchiveCard } = props;
+  const { cardData, handleArchiveCard, listName } = props;
   const [anchorEl, setAnchorEl] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
@@ -64,7 +64,9 @@ function Card(props) {
           }}
         >
           <span
-            style={{ cursor: 'pointer' }}
+            style={{
+              cursor: 'pointer',
+            }}
             onClick={() => handleArchiveCard(cardData.id)}
           >
             Archive
@@ -76,6 +78,7 @@ function Card(props) {
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
+        listName={listName}
         cardData={cardData}
       />
     </div>

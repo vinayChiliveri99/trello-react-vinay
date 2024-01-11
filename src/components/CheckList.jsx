@@ -3,63 +3,59 @@ import { Button } from '@mui/material';
 import CheckItems from './CheckItems';
 import { useEffect, useState } from 'react';
 import AddCheckItem from './AddCheckItem';
+import {
+  addNewCheckItem,
+  deleteCheckList,
+  getCheckItemsData,
+} from '../API';
 
 function CheckList(props) {
   const { singleCheckListData, setCheckListData, cardId } = props;
 
   const [checkItemsList, setCheckItemsList] = useState([]);
   const [addCheckItem, setAddCheckItem] = useState(false);
-  let [itemValue, setItemValue] = useState('');
+  const [itemValue, setItemValue] = useState('');
 
-  //   console.log('checkitemslist', checkItemsList);
-
-  const ApiKey = '8595f1e78e95986a8b549202c4381a5f';
-  const ApiToken =
-    'ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889';
+  // to delete a checklist from a card.
 
   function handleDeleteCheckList(checkListId, CardId) {
-    fetch(
-      `https://api.trello.com/1/cards/${CardId}/checklists/${checkListId}?key=${ApiKey}&token=${ApiToken}`,
-      {
-        method: 'DELETE',
-      }
-    )
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('error while deleting checklist');
-      })
-      .then((data) => setCheckListData(data));
+    deleteCheckList(CardId, checkListId)
+      .then((data) => setCheckListData(data))
+      .catch((err) =>
+        console.log('error while deleting the checklist', err)
+      );
   }
 
+  // getting the check items data of a checklist, getCheckItemsData is a get request
+
   useEffect(() => {
-    fetch(
-      `https://api.trello.com/1/checklists/${singleCheckListData.id}/checkItems?key=${ApiKey}&token=${ApiToken}`
-    )
-      .then((res) => res.json())
-      .then((data) => setCheckItemsList(data))
+    getCheckItemsData(singleCheckListData.id)
+      .then((data) => {
+        // console.log('data', data);
+        setCheckItemsList(data);
+      })
       .catch((err) => console.log(err));
   }, [singleCheckListData.id]);
+
+  // the popover, used to enter a checkItem (new task)
 
   function handleAddCheckItem() {
     setAddCheckItem(!addCheckItem);
   }
 
+  // cancel button in the popover, where we enter a checkitem (new task)
   function handleCancel() {
     setAddCheckItem(false);
   }
 
+  // adding check item to the checklist, addNewCheckItem is a post request.
+
   function handleAddItem() {
+    // checking if the task is empty, if so it wont add it to the checklist.
+    // need to add an error state here.
+
     itemValue.length !== 0
-      ? fetch(
-          `https://api.trello.com/1/checklists/${singleCheckListData.id}/checkItems?name=${itemValue}&key=${ApiKey}&token=${ApiToken}`,
-          {
-            method: 'POST',
-          }
-        )
-          .then((res) => {
-            if (res.ok) return res.json();
-            throw new Error('error while adding checkItem');
-          })
+      ? addNewCheckItem(singleCheckListData.id, itemValue)
           .then((data) => {
             setCheckItemsList([...checkItemsList, data]);
             setItemValue('');
@@ -81,9 +77,12 @@ function CheckList(props) {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
+          marginBottom: '5px',
         }}
       >
-        <p>{singleCheckListData.name}</p>
+        <p style={{ fontWeight: '900', fontSize: '18px' }}>
+          {singleCheckListData.name}
+        </p>
         <Button
           onClick={() =>
             handleDeleteCheckList(
@@ -95,7 +94,14 @@ function CheckList(props) {
           Delete
         </Button>
       </div>
-      <div>Progress bar</div>
+
+      {/* <div>
+        <span>
+          <LinearProgress variant="determinate" value={progress} />
+        </span>
+      </div> */}
+
+      {/* <div>Progress bar</div> */}
 
       {checkItemsList.map((ele) => (
         <div key={ele.id}>
@@ -118,6 +124,7 @@ function CheckList(props) {
           handleCancel={handleCancel}
           setItemValue={setItemValue}
           handleAddItem={handleAddItem}
+          itemValue={itemValue}
         />
       )}
     </div>

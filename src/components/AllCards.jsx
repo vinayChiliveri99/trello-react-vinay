@@ -1,31 +1,20 @@
 /* eslint-disable react/prop-types */
+import { archiveCard } from '../API';
 import Card from './Card';
 
 function AllCards(props) {
-  const { indCardsList, setIndCardsList } = props;
+  const { indCardsList, setIndCardsList, listName } = props;
 
-  const ApiKey = `8595f1e78e95986a8b549202c4381a5f`;
-  const ApiToken = `ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889`;
+  // archiving a card
 
   function handleArchiveCard(id) {
-    // console.log('card clicked: ', id);
-    // setIsOptionsOpen(false);
-    fetch(
-      `https://api.trello.com/1/cards/${id}?key=${ApiKey}&token=${ApiToken}`,
-      {
-        method: 'DELETE',
-      }
-    )
-      .then((response) => {
-        if (response.ok) {
-          setIndCardsList(
-            indCardsList.filter((ele) => ele.id !== id)
-          );
-        } else {
-          throw new Error('error while deleting a card');
-        }
+    archiveCard(id)
+      .then(() => {
+        setIndCardsList(indCardsList.filter((ele) => ele.id !== id));
       })
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        console.error('error while archiving the card', err)
+      );
   }
 
   return (
@@ -34,6 +23,7 @@ function AllCards(props) {
         <Card
           key={ele.id}
           cardData={ele}
+          listName={listName}
           handleArchiveCard={handleArchiveCard}
         />
       ))}

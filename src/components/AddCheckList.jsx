@@ -1,28 +1,20 @@
 /* eslint-disable react/prop-types */
 import { Button } from '@mui/material';
 import { useState } from 'react';
+import { addNewCheckList } from '../API';
 
 function AddCheckList(props) {
   const { cardId, setCheckListData, setAddNewCheckList } = props;
   const [checklistName, setChecklistName] = useState('Checklist');
 
-  const ApiKey = '8595f1e78e95986a8b549202c4381a5f';
-  const ApiToken =
-    'ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889';
-
   function closeNewCheckList() {
     setAddNewCheckList(false);
   }
 
-  function handleAddNewCheckList() {
-    fetch(
-      `https://api.trello.com/1/cards/${cardId}/checklists?key=${ApiKey}&token=${ApiToken}&name=${checklistName}`,
-      { method: 'POST' }
-    )
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('error while creating new checklist');
-      })
+  function handleAddNewCheckList(checklistName, cardId) {
+    // creating a new checklist to the card
+
+    addNewCheckList(checklistName, cardId)
       .then((data) =>
         setCheckListData((ChekListData) => [...ChekListData, data])
       )
@@ -39,7 +31,7 @@ function AddCheckList(props) {
         zIndex: '100',
         height: '250px',
         width: '250px',
-        border: '1px solid red',
+        border: '1px solid black',
         padding: '5px',
       }}
     >
@@ -62,7 +54,10 @@ function AddCheckList(props) {
           value={checklistName}
           onChange={(e) => setChecklistName(e.target.value)}
         />
-        <Button onClick={handleAddNewCheckList} variant="contained">
+        <Button
+          onClick={() => handleAddNewCheckList(checklistName, cardId)}
+          variant="contained"
+        >
           Add
         </Button>
       </div>

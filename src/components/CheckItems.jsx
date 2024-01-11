@@ -2,29 +2,17 @@
 /* eslint-disable react/prop-types */
 import { Checkbox } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { deleteACheckItem, updateCheckBoxes } from '../API';
 
 function CheckItems(props) {
   const { name, id, chekListId, setCheckItemsList, state, cardId } =
     props;
 
-  //   console.log('single checklist id', chekListId, id);
+  // deleting a single checkitem from a checklist
+  function handleDeleteItem(chekListId, id) {
+    // the delete request is being made in API.js file
 
-  const ApiKey = '8595f1e78e95986a8b549202c4381a5f';
-  const ApiToken =
-    'ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889';
-
-  function handleDeleteItem(id) {
-    console.log('delete clicked', id, chekListId);
-    fetch(
-      `https://api.trello.com/1/checklists/${chekListId}/checkItems/${id}?key=${ApiKey}&token=${ApiToken}`,
-      {
-        method: 'DELETE',
-      }
-    )
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('error while deleting a checkitem');
-      })
+    deleteACheckItem(chekListId, id)
       .then(() => {
         setCheckItemsList((prevList) =>
           prevList.filter((item) => item.id !== id)
@@ -37,19 +25,12 @@ function CheckItems(props) {
 
   // Update the checkbox state
 
-  function handleCheckboxChange() {
+  function handleCheckboxChange(state, cardId, id) {
     const newState = state === 'complete' ? 'incomplete' : 'complete';
 
-    fetch(
-      `https://api.trello.com/1/cards/${cardId}/checkItem/${id}?state=${newState}&key=${ApiKey}&token=${ApiToken}`,
-      {
-        method: 'PUT',
-      }
-    )
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error('error while updating checkitem state');
-      })
+    // updatecheckboxes present in API.js file
+
+    updateCheckBoxes(cardId, id, newState)
       .then((updatedItem) => {
         setCheckItemsList((prevList) =>
           prevList.map((item) =>
@@ -72,7 +53,7 @@ function CheckItems(props) {
       <div>
         <Checkbox
           checked={state === 'complete'}
-          onChange={handleCheckboxChange}
+          onChange={() => handleCheckboxChange(state, cardId, id)}
         ></Checkbox>
         <p
           style={{
@@ -85,7 +66,7 @@ function CheckItems(props) {
         </p>
       </div>
       <DeleteIcon
-        onClick={() => handleDeleteItem(id)}
+        onClick={() => handleDeleteItem(chekListId, id)}
         style={{ cursor: 'pointer' }}
       ></DeleteIcon>
     </div>

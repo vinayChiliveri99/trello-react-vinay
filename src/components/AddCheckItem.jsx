@@ -2,7 +2,8 @@
 import { Button } from '@mui/material';
 
 function AddCheckItem(props) {
-  const { handleCancel, setItemValue, handleAddItem } = props;
+  const { handleCancel, setItemValue, itemValue, handleAddItem } =
+    props;
   return (
     <div
       style={{
@@ -14,6 +15,7 @@ function AddCheckItem(props) {
       <input
         style={{ width: '100%', height: '70px' }}
         type="text"
+        value={itemValue}
         placeholder="Add an item"
         onChange={(e) => setItemValue(e.target.value)}
       />

@@ -7,6 +7,7 @@ import {
   Toolbar,
 } from '@mui/material';
 import CreatePopover from './CreatePopover';
+import { useNavigate } from 'react-router-dom';
 
 function Header(props) {
   const {
@@ -14,6 +15,8 @@ function Header(props) {
     createPopoverAnchor,
     handleCreateClose,
   } = props;
+
+  const navigate = useNavigate();
   return (
     <>
       <CssBaseline />
@@ -27,7 +30,10 @@ function Header(props) {
             justifyContent="space-between"
             style={{ margin: '0 30px' }}
           >
-            <p className="logo"></p>
+            <p
+              className="logo"
+              onClick={() => navigate('/boards')}
+            ></p>
             <Button
               variant="contained"
               onClick={handleCreateClick}
