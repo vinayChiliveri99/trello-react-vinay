@@ -20,21 +20,33 @@ function Card(props) {
     setAnchorEl(false);
   };
 
+  const cardStyle = {
+    padding: '10px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    position: 'relative',
+    boxShadow: isHovered
+      ? '0px 0px 10px 0px rgba(0,0,0,0.5)'
+      : 'none',
+    transition: 'box-shadow',
+    border: isHovered ? '1px solid blue' : '',
+    borderRadius: isHovered ? '5px' : '',
+  };
+
+  const optionsStyle = {
+    position: 'absolute',
+    width: '100px',
+    top: '30px',
+    right: '50px',
+    background: 'white',
+    boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
+    zIndex: '1',
+  };
+
   return (
     <div
       key={cardData.id}
-      style={{
-        padding: '10px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        position: 'relative',
-        boxShadow: isHovered
-          ? '0px 0px 10px 0px rgba(0,0,0,0.5)'
-          : 'none',
-        transition: 'box-shadow 0.3s',
-        border: isHovered ? '1px solid blue' : '',
-        borderRadius: isHovered ? '5px' : '',
-      }}
+      style={cardStyle}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
@@ -52,17 +64,7 @@ function Card(props) {
       )}
 
       {isOptionsOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            width: '100px',
-            top: '30px',
-            right: '50px',
-            background: 'white',
-            boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-            zIndex: '1',
-          }}
-        >
+        <div style={optionsStyle}>
           <span
             style={{
               cursor: 'pointer',
