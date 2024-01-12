@@ -9,11 +9,13 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getAllBoards } from '../API';
+import ShimmerLoader from './ShimmerLoader';
 
 function Boards(props) {
   const { handleCreateClick } = props;
   const [boardsData, setBoardsData] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -21,7 +23,10 @@ function Boards(props) {
   // getAllBoards is a get req present in API.js
   useEffect(() => {
     getAllBoards()
-      .then((data) => setBoardsData(data))
+      .then((data) => {
+        setBoardsData(data);
+        setLoading(false);
+      })
       .catch((err) => {
         console.log(err);
         setErrorMessage(
@@ -48,6 +53,29 @@ function Boards(props) {
       <Alert variant="filled" severity="error">
         {errorMessage}
       </Alert>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div style={{ marginTop: '12vh', marginLeft: '18vw' }}>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            width: '70vw',
+            height: '50vh',
+            gap: '15px',
+          }}
+        >
+          <ShimmerLoader
+            height={100}
+            width={200}
+            count={10}
+            marginRight="10px"
+          />
+        </div>
+      </div>
     );
   }
 
@@ -95,6 +123,7 @@ function Boards(props) {
         <CardActionArea
           style={createCardStyle}
           onClick={handleCreateClick}
+          disabled={boardsData.length === 10}
         >
           <Card style={createCardStyle}>
             <Typography>Create new board</Typography>

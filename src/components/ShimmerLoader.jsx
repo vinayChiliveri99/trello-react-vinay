@@ -8,11 +8,12 @@ const ShimmerLoader = ({ count, width, height, marginRight }) => {
   for (let index = 0; index < count; index++) {
     shimmerLoaders.push(
       <Skeleton
+        animation="wave"
         key={index}
         variant="rectangular"
         width={width}
         height={height}
-        style={{ marginRight, borderRadius: '10px' }}
+        style={{ marginRight, borderRadius: '7px' }}
       />
     );
   }
