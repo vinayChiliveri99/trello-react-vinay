@@ -1,13 +1,19 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import WorkSpaceCard from './WorkSpaceCard';
-import { Card, CardActionArea, Typography } from '@mui/material';
+import {
+  Alert,
+  Card,
+  CardActionArea,
+  Typography,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getAllBoards } from '../API';
 
 function Boards(props) {
   const { handleCreateClick } = props;
   const [boardsData, setBoardsData] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
 
@@ -16,7 +22,12 @@ function Boards(props) {
   useEffect(() => {
     getAllBoards()
       .then((data) => setBoardsData(data))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorMessage(
+          'Error while getting boards data. Please try again'
+        );
+      });
   }, []);
 
   const createCardStyle = {
@@ -30,6 +41,14 @@ function Boards(props) {
 
   function handleBoardOpening(id) {
     navigate(`/boards/${id}`);
+  }
+
+  if (errorMessage !== null) {
+    return (
+      <Alert variant="filled" severity="error">
+        {errorMessage}
+      </Alert>
+    );
   }
 
   return (

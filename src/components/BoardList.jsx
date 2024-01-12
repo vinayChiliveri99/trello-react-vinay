@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import {
+  Alert,
   CssBaseline,
   List,
   ListItem,
@@ -15,6 +16,7 @@ function BoardList(props) {
   const { ele, handleArchive } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [indCardsList, setIndCardsList] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -33,6 +35,9 @@ function BoardList(props) {
         })
         .catch((error) => {
           console.log('error while setting cards data', error);
+          setErrorMessage(
+            'Error while getting the cards data of a list'
+          );
         });
     };
 
@@ -45,6 +50,10 @@ function BoardList(props) {
     backgroundColor: 'white',
     borderRadius: '10px',
   };
+
+  if (errorMessage !== null) {
+    return <Alert severity="error">{errorMessage}</Alert>;
+  }
 
   return (
     <>

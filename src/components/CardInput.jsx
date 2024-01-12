@@ -1,5 +1,11 @@
 /* eslint-disable react/prop-types */
-import { Button, Card, CardContent, Input } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  Input,
+} from '@mui/material';
 import { useState } from 'react';
 import { createCard } from '../API';
 
@@ -10,6 +16,7 @@ function CardInput({
   indCardsList,
 }) {
   const [cardText, setCardText] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // function to create a new card, after giving some value
   // need to handle error, when user gives a empty value to name
@@ -26,10 +33,19 @@ function CardInput({
           })
           .catch((error) => {
             console.error('Error creating card:', error);
+            setErrorMessage('Error while creating a new card');
           })
-      : onClose();
+      : onClose(); // if the title is empty, the form closes.
 
     setCardText('');
+  }
+
+  if (errorMessage !== null) {
+    return (
+      <Alert severity="error" variant="filled">
+        {errorMessage}
+      </Alert>
+    );
   }
 
   return (

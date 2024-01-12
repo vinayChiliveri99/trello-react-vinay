@@ -23,6 +23,7 @@ function AddCheckItem(props) {
         <Button
           onClick={handleAddItem}
           variant="contained"
+          disabled={itemValue.length === 0}
           style={{ margin: '0 10px' }}
         >
           Add

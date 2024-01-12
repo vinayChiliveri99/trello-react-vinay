@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
-import { Button, Container, Popover } from '@mui/material';
+import { Alert, Button, Container, Popover } from '@mui/material';
 import cardsPhoto from '../../assets/cards.png';
 import { useNavigate } from 'react-router-dom';
 import { addNewBoard } from '../API';
@@ -10,6 +10,7 @@ function CreatePopover(props) {
   const { createPopoverAnchor, handleCreateClose } = props;
 
   const [boardName, setBoardName] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function handleCreateBoard(e) {
     e.preventDefault();
@@ -30,6 +31,9 @@ function CreatePopover(props) {
       })
       .catch((error) => {
         console.log('error while creating a new board', error);
+        setErrorMessage(
+          'Error while creating the new board, please try again..'
+        );
       });
   }
 
@@ -47,6 +51,14 @@ function CreatePopover(props) {
   const createPopoverId = isCreatePopoverOpen
     ? 'create-popover'
     : undefined;
+
+  if (errorMessage !== null) {
+    return (
+      <Alert severity="error" variant="filled">
+        {errorMessage}
+      </Alert>
+    );
+  }
 
   return (
     <Popover

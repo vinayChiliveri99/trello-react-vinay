@@ -4,8 +4,6 @@ import { useState } from 'react';
 
 function AddListForm({ onCancel, onListNameSubmit }) {
   const [listName, setListName] = useState('');
-  // const [error, setError] = useState(null);
-  // const [status, setStatus] = useState('typing');
 
   function handleInputChange(e) {
     setListName(e.target.value);
@@ -14,10 +12,6 @@ function AddListForm({ onCancel, onListNameSubmit }) {
   function handleSubmit(e) {
     e.preventDefault();
     onListNameSubmit(listName);
-
-    // if (listName.length === 0) {
-    //   setError('emptyValue');
-    // }
     setListName('');
   }
 
@@ -33,6 +27,7 @@ function AddListForm({ onCancel, onListNameSubmit }) {
       }}
     >
       <form onSubmit={handleSubmit}>
+        {/* as we gave input as required, empty input handling does here */}
         <input
           type="text"
           value={listName}
@@ -56,12 +51,6 @@ function AddListForm({ onCancel, onListNameSubmit }) {
         >
           X
         </button>
-
-        {/* {error !== null && (
-          <p style={{ color: 'red', fontSize: '18px' }}>
-            List cannot be empty!!
-          </p>
-        )} */}
       </form>
     </div>
   );

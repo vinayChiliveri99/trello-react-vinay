@@ -4,6 +4,8 @@ import Popover from '@mui/material/Popover';
 import CheckList from './CheckList';
 import { useEffect, useState } from 'react';
 import AddCheckList from './AddCheckList';
+import { getCheckListsInACard } from '../API';
+import { Alert } from '@mui/material';
 
 export default function CardDetail({
   open,
@@ -16,30 +18,32 @@ export default function CardDetail({
   const [addNewCheckList, setAddNewCheckList] = useState(false);
   const id = open ? 'simple-popover' : undefined;
 
-  const ApiKey = '8595f1e78e95986a8b549202c4381a5f';
-  const ApiToken =
-    'ATTA4d7d74fc6a6c36f86451b56a6f76d81e787ef0b601deba8c15bbff6c5179b25973C5D889';
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handlePopoverClick = (event) => {
     event.stopPropagation();
   };
 
-  //   console.log(checkListData);
+  // getting the checklists in a card, as a card can have multiple checklists
 
   useEffect(() => {
     function fetchCheckLists() {
-      fetch(
-        `https://api.trello.com/1/cards/${cardData.id}/checklists?key=${ApiKey}&token=${ApiToken}`
-      )
-        .then((res) => res.json())
+      getCheckListsInACard(cardData.id)
         .then((data) => setCheckListData(data))
-        .catch((err) =>
-          console.log('error while fetching checklist data', err)
-        );
+        .catch((err) => {
+          console.log('error while fetching checklist data', err);
+          setErrorMessage(
+            'Error while getting the checklits data in a card, please try again..'
+          );
+        });
     }
 
     fetchCheckLists();
   }, [cardData.id]);
+
+  if (errorMessage !== null) {
+    return <Alert severity="error">{errorMessage}</Alert>;
+  }
 
   return (
     <Popover

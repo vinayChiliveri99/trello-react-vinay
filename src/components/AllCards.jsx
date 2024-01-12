@@ -24,16 +24,19 @@ function AllCards(props) {
       });
   }
 
+  // handling error
+
+  if (errorMessage !== null) {
+    return (
+      <Alert severity="error">
+        <AlertTitle>Error</AlertTitle>
+        {errorMessage}
+      </Alert>
+    );
+  }
+
   return (
     <section style={{ maxHeight: '400px', overflowY: 'auto' }}>
-      {/* handling errors  */}
-
-      {errorMessage && (
-        <Alert severity="error">
-          <AlertTitle>Error</AlertTitle>
-          {errorMessage}
-        </Alert>
-      )}
       {indCardsList.map((ele) => (
         <Card
           key={ele.id}

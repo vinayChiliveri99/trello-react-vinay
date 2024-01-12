@@ -31,9 +31,6 @@ export function addNewBoard(boardName) {
         return response.data;
       }
     })
-    .then((data) => {
-      return data;
-    })
     .catch((error) => {
       console.error('Error while adding board:', error);
       throw error;
@@ -52,7 +49,6 @@ export function addNewCheckItem(checkListId, checkItemValue) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('Error while adding checkItem to checklist', error);
       throw error;
@@ -71,7 +67,6 @@ export function deleteCheckList(cardId, checkListId) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('Error while deleting the checklist', error);
       throw error;
@@ -90,7 +85,6 @@ export function getCheckItemsData(checkListId) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log(
         'Error while getting the checkitems data of a checklist',
@@ -112,7 +106,6 @@ export function deleteACheckItem(checkListId, checkItemId) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log(
         'Error while deleting a checkItem in a checklist',
@@ -134,7 +127,6 @@ export function updateCheckBoxes(cardId, checkItemId, newState) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log(
         'Error while updating the state of a checkbox',
@@ -157,7 +149,6 @@ export function createCard(listId, cardName) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('Error while creating a card in a list', error);
       throw error;
@@ -166,20 +157,24 @@ export function createCard(listId, cardName) {
 
 // getting checklists present in a card, as a card can have any number of (independent) checklists
 
-// export function getCheckListsInACard(cardId) {
-//     const url = `https://api.trello.com/1/cards/${cardId}/checklists?key=${ApiKey}&token=${ApiToken}`
+export function getCheckListsInACard(cardId) {
+  const url = `https://api.trello.com/1/cards/${cardId}/checklists?key=${ApiKey}&token=${ApiToken}`;
 
-//     return axios.get(url)
-//     .then((response) => {
-//         if(response.status === 200) {
-//             return response.data;
-//         }
-//     }).then((data) => data)
-//     .catch((error) => {
-//         console.log('Error while fetching the checklists present in a card', error);
-//         throw error;
-//     })
-// }
+  return axios
+    .get(url)
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      }
+    })
+    .catch((error) => {
+      console.log(
+        'Error while fetching the checklists present in a card',
+        error
+      );
+      throw error;
+    });
+}
 
 // fetch boards
 export function getAllBoards() {
@@ -192,7 +187,6 @@ export function getAllBoards() {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('error while getting all boards data');
       throw error;
@@ -211,7 +205,6 @@ export function getListsInABoard(id) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('Error while getting the lists in a board', error);
       throw error;
@@ -230,7 +223,6 @@ export function getBoardDetails(id) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('Error while getting the board details', error);
       throw error;
@@ -249,7 +241,6 @@ export function createNewList(listName, boardId) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('error while creating a new list', error);
       throw error;
@@ -268,7 +259,6 @@ export function archiveList(listId) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('Error while archiving the list', error);
       throw error;
@@ -287,7 +277,6 @@ export function archiveCard(cardId) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log('Error while archiving a card', error);
       throw error;
@@ -306,7 +295,6 @@ export function addNewCheckList(checkListName, cardId) {
         return response.data;
       }
     })
-    .then((data) => data)
     .catch((error) => {
       console.log(
         'Error while adding a new checklist to the card',

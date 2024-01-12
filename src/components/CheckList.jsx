@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Button } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import CheckItems from './CheckItems';
 import { useEffect, useState } from 'react';
 import AddCheckItem from './AddCheckItem';
@@ -15,15 +15,19 @@ function CheckList(props) {
   const [checkItemsList, setCheckItemsList] = useState([]);
   const [addCheckItem, setAddCheckItem] = useState(false);
   const [itemValue, setItemValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // to delete a checklist from a card.
 
   function handleDeleteCheckList(checkListId, CardId) {
     deleteCheckList(CardId, checkListId)
       .then((data) => setCheckListData(data))
-      .catch((err) =>
-        console.log('error while deleting the checklist', err)
-      );
+      .catch((err) => {
+        console.log('error while deleting the checklist', err);
+        setErrorMessage(
+          'Error while deleting the checklist, please try again..'
+        );
+      });
   }
 
   // getting the check items data of a checklist, getCheckItemsData is a get request
@@ -34,11 +38,15 @@ function CheckList(props) {
         // console.log('data', data);
         setCheckItemsList(data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        setErrorMessage(
+          'Error while fetching the checkitems data, please try again..'
+        );
+      });
   }, [singleCheckListData.id]);
 
   // the popover, used to enter a checkItem (new task)
-
   function handleAddCheckItem() {
     setAddCheckItem(!addCheckItem);
   }
@@ -49,19 +57,22 @@ function CheckList(props) {
   }
 
   // adding check item to the checklist, addNewCheckItem is a post request.
-
   function handleAddItem() {
-    // checking if the task is empty, if so it wont add it to the checklist.
-    // need to add an error state here.
+    addNewCheckItem(singleCheckListData.id, itemValue)
+      .then((data) => {
+        setCheckItemsList([...checkItemsList, data]);
+        setItemValue('');
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorMessage(
+          'Error while adding the checkItem (task) to the checklist, please try again..'
+        );
+      });
+  }
 
-    itemValue.length !== 0
-      ? addNewCheckItem(singleCheckListData.id, itemValue)
-          .then((data) => {
-            setCheckItemsList([...checkItemsList, data]);
-            setItemValue('');
-          })
-          .catch((err) => console.log(err))
-      : console.log('input cannot be empty');
+  if (errorMessage !== null) {
+    return <Alert severity="error">{errorMessage}</Alert>;
   }
 
   return (
@@ -94,12 +105,6 @@ function CheckList(props) {
           Delete
         </Button>
       </div>
-
-      {/* <div>
-        <span>
-          <LinearProgress variant="determinate" value={progress} />
-        </span>
-      </div> */}
 
       {/* <div>Progress bar</div> */}
 

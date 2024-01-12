@@ -64,9 +64,10 @@ function BoardDisplay() {
   function handleAddListSubmit(listName) {
     createNewList(listName, id)
       .then((data) => setListsInBoard([...listsInBoard, data]))
-      .catch((err) =>
-        console.log('Error while creating the list', err)
-      );
+      .catch((err) => {
+        console.log('Error while creating the list', err);
+        setError('Error while creating the list');
+      });
   }
 
   function handleArchive(listId) {
@@ -86,82 +87,82 @@ function BoardDisplay() {
       });
   }
 
+  if (error !== null) {
+    return (
+      <Alert variant="filled" severity="error">
+        {error}
+      </Alert>
+    );
+  }
+
   return (
-    <>
-      {error !== null ? (
-        <Alert variant="filled" severity="error">
-          {error}
-        </Alert>
-      ) : (
-        <section>
-          <CssBaseline />
-          <AppBar
-            position="relative"
-            style={{
-              height: '7vh',
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '30px',
-            }}
-          >
-            <Typography variant="h5">{boardDetails.name}</Typography>
-          </AppBar>
-          <div
-            style={{
-              display: 'flex',
-              width: '100vw',
-              height: '83vh',
-              overflowX: 'scroll',
-              backgroundColor: '#0179BF',
-              gap: '15px',
-              padding: '20px',
-            }}
-          >
-            {loading ? (
-              // <p>Loading...</p>
-              <ShimmerLoader
-                count={4}
-                width={250}
-                height={100}
-                marginRight="15px"
+    <section>
+      <CssBaseline />
+      <AppBar
+        position="relative"
+        style={{
+          height: '7vh',
+          display: 'flex',
+          justifyContent: 'center',
+          padding: '30px',
+        }}
+      >
+        <Typography variant="h5">{boardDetails.name}</Typography>
+      </AppBar>
+      <div
+        style={{
+          display: 'flex',
+          width: '100vw',
+          height: '83vh',
+          overflowX: 'scroll',
+          backgroundColor: '#0179BF',
+          gap: '15px',
+          padding: '20px',
+        }}
+      >
+        {loading ? (
+          // <p>Loading...</p>
+          <ShimmerLoader
+            count={4}
+            width={250}
+            height={100}
+            marginRight="15px"
+          />
+        ) : (
+          <>
+            {listsInBoard.map((ele) => (
+              <div key={ele.id}>
+                <BoardList
+                  ele={ele}
+                  handleArchive={() => handleArchive(ele.id)}
+                />
+              </div>
+            ))}
+
+            {isAddingList ? (
+              <AddListForm
+                onCancel={handleCancelAddList}
+                onListNameSubmit={handleAddListSubmit}
               />
             ) : (
-              <>
-                {listsInBoard.map((ele) => (
-                  <div key={ele.id}>
-                    <BoardList
-                      ele={ele}
-                      handleArchive={() => handleArchive(ele.id)}
-                    />
-                  </div>
-                ))}
-
-                {isAddingList ? (
-                  <AddListForm
-                    onCancel={handleCancelAddList}
-                    onListNameSubmit={handleAddListSubmit}
-                  />
-                ) : (
-                  <List
-                    style={{
-                      height: '50px',
-                      width: '250px',
-                      backgroundColor: 'white',
-                      borderRadius: '15px',
-                      cursor: 'pointer',
-                      flexShrink: '0',
-                    }}
-                    onClick={handleCreateNewList}
-                  >
-                    <ListItem>+ Add another list</ListItem>
-                  </List>
-                )}
-              </>
+              <List
+                style={{
+                  height: '50px',
+                  width: '250px',
+                  backgroundColor: 'white',
+                  borderRadius: '15px',
+                  cursor: 'pointer',
+                  flexShrink: '0',
+                }}
+                onClick={handleCreateNewList}
+              >
+                <ListItem>+ Add another list</ListItem>
+              </List>
             )}
-          </div>
-        </section>
-      )}
-    </>
+          </>
+        )}
+      </div>
+    </section>
   );
 }
 

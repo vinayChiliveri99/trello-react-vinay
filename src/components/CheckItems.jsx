@@ -1,12 +1,15 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/prop-types */
-import { Checkbox } from '@mui/material';
+import { Alert, Checkbox } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteACheckItem, updateCheckBoxes } from '../API';
+import { useState } from 'react';
 
 function CheckItems(props) {
   const { name, id, chekListId, setCheckItemsList, state, cardId } =
     props;
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // deleting a single checkitem from a checklist
   function handleDeleteItem(chekListId, id) {
@@ -20,6 +23,9 @@ function CheckItems(props) {
       })
       .catch((error) => {
         console.error('Error deleting check item:', error);
+        setErrorMessage(
+          'Error while deleting a checkitem, please try again..'
+        );
       });
   }
 
@@ -42,7 +48,14 @@ function CheckItems(props) {
       })
       .catch((error) => {
         console.error('Error updating checkitem state:', error);
+        setErrorMessage(
+          'Error while updating the checkitem state, please try again..'
+        );
       });
+  }
+
+  if (errorMessage !== null) {
+    return <Alert severity="error">{errorMessage}</Alert>;
   }
 
   return (

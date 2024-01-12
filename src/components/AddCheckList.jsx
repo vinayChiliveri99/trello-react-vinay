@@ -32,6 +32,16 @@ function AddCheckList(props) {
     setChecklistName('Checklist');
     closeNewCheckList();
   }
+
+  if (errorMessage !== null) {
+    return (
+      <Alert severity="error" variant="filled">
+        <AlertTitle>Error</AlertTitle>
+        {errorMessage}
+      </Alert>
+    );
+  }
+
   return (
     <div
       style={{
@@ -44,12 +54,6 @@ function AddCheckList(props) {
         padding: '5px',
       }}
     >
-      {errorMessage && (
-        <Alert severity="error" variant="filled">
-          <AlertTitle>Error</AlertTitle>
-          {errorMessage}
-        </Alert>
-      )}
       <p style={{ display: 'flex', justifyContent: 'space-around' }}>
         Add checklist <span onClick={closeNewCheckList}>X</span>
       </p>
