@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
-import { Button } from '@mui/material';
+import { Alert, AlertTitle, Button } from '@mui/material';
 import { useState } from 'react';
 import { addNewCheckList } from '../API';
 
 function AddCheckList(props) {
   const { cardId, setCheckListData, setAddNewCheckList } = props;
   const [checklistName, setChecklistName] = useState('Checklist');
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function closeNewCheckList() {
     setAddNewCheckList(false);
@@ -18,7 +19,15 @@ function AddCheckList(props) {
       .then((data) =>
         setCheckListData((ChekListData) => [...ChekListData, data])
       )
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(
+          'error while creating/adding a new checklist',
+          err
+        );
+        setErrorMessage(
+          'Failed to add new checklist, Please try again..'
+        );
+      });
 
     setChecklistName('Checklist');
     closeNewCheckList();
@@ -35,6 +44,12 @@ function AddCheckList(props) {
         padding: '5px',
       }}
     >
+      {errorMessage && (
+        <Alert severity="error" variant="filled">
+          <AlertTitle>Error</AlertTitle>
+          {errorMessage}
+        </Alert>
+      )}
       <p style={{ display: 'flex', justifyContent: 'space-around' }}>
         Add checklist <span onClick={closeNewCheckList}>X</span>
       </p>

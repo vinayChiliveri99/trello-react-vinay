@@ -6,11 +6,6 @@ function AddCard(props) {
   const { listId, setIndCardsList, indCardsList } = props;
   const [isCardOpen, setIsCardOpen] = useState(false);
 
-  function handleAddCard(text) {
-    console.log(`Adding card to list ${listId} with text: ${text}`);
-    setIsCardOpen(false);
-  }
-
   function handleAddCardClick() {
     setIsCardOpen(true);
   }
@@ -31,7 +26,6 @@ function AddCard(props) {
         <CardInput
           listId={listId}
           onClose={handleCloseCard}
-          onAddCard={handleAddCard}
           indCardsList={indCardsList}
           setIndCardsList={setIndCardsList}
         />

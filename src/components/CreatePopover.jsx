@@ -79,6 +79,7 @@ function CreatePopover(props) {
             type="submit"
             variant="contained"
             style={{ marginLeft: '75px' }}
+            disabled={boardName.length === 0}
           >
             Create
           </Button>

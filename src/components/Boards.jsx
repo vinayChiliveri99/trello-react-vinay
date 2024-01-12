@@ -35,6 +35,7 @@ function Boards(props) {
   return (
     <section className="boards-outer">
       <h4>YOUR WORKSPACE</h4>
+
       <section className="boards-container">
         {boardsData.map((board) => {
           let backgroundImage = board.prefs.backgroundImage;
@@ -54,7 +55,10 @@ function Boards(props) {
             backgroundPosition: 'center',
           };
 
-          const contentStyle = { margin: '10px', fontWeight: '700' };
+          const contentStyle = {
+            margin: '10px',
+            fontWeight: '700',
+          };
 
           return (
             <div key={board.id}>

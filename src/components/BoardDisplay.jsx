@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
+  Alert,
   AppBar,
   CssBaseline,
   List,
@@ -15,135 +16,152 @@ import {
   getBoardDetails,
   getListsInABoard,
 } from '../API';
+import ShimmerLoader from './ShimmerLoader';
 
 function BoardDisplay() {
-  // this is the board id
   let { id } = useParams();
 
   const [listsInBoard, setListsInBoard] = useState([]);
   const [boardDetails, setBoardDetails] = useState({});
   const [isAddingList, setIsAddingList] = useState(false);
-
-  // console.log(listsInBoard);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // getting the lists present in a board.
-
-    function fetchListsInBoard() {
+    function fetchData() {
+      // getting the boards in the list.
       getListsInABoard(id)
-        .then((data) => setListsInBoard(data))
-        .catch((err) =>
-          console.log('Error while fetching lists in a board', err)
-        );
+        .then((listsData) => {
+          setListsInBoard(listsData);
+
+          return getBoardDetails(id);
+        })
+        .then((boardDetailsData) => {
+          setBoardDetails(boardDetailsData);
+        })
+        .catch((error) => {
+          console.error('Error while fetching data:', error);
+          setError(
+            'Error while fetching lists in a board, Please try again..'
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
 
-    fetchListsInBoard();
-
-    // getting board details
-
-    function fetchBoardDetails() {
-      getBoardDetails(id)
-        .then((data) => setBoardDetails(data))
-        .catch((err) =>
-          console.log('error while fetching board details', err)
-        );
-    }
-    fetchBoardDetails();
+    fetchData();
   }, [id]);
-
-  const newListStyle = {
-    height: '50px',
-    width: '250px',
-    backgroundColor: 'white',
-    borderRadius: '15px',
-    cursor: 'pointer',
-    flexShrink: '0',
-  };
 
   function handleCreateNewList() {
     setIsAddingList(true);
   }
 
-  const handleCancelAddList = () => {
+  function handleCancelAddList() {
     setIsAddingList(false);
-  };
+  }
 
-  // to handle the submitted list name
-  const handleAddListSubmit = (listName) => {
-    // console.log(listName);
-
-    // creating a new list in a board
-
+  function handleAddListSubmit(listName) {
     createNewList(listName, id)
       .then((data) => setListsInBoard([...listsInBoard, data]))
       .catch((err) =>
-        console.log('error while creating the list', err)
+        console.log('Error while creating the list', err)
       );
-  };
+  }
 
   function handleArchive(listId) {
-    // console.log(listId);
     archiveList(listId)
       .then((data) => {
         if (data.id) {
           setListsInBoard(
             listsInBoard.filter((ele) => ele.id !== data.id)
           );
-        } else {
-          throw new Error('Invalid response from Trello API');
         }
       })
       .catch((error) => {
-        console.error(error);
+        console.error('Error while archiving the list', error);
+        setError(
+          'Error while archiving the list, please try again..'
+        );
       });
   }
 
   return (
-    <section>
-      <CssBaseline />
-      <AppBar
-        position="relative"
-        style={{
-          height: '7vh',
-          display: 'flex',
-          justifyContent: 'center',
-          padding: '30px',
-        }}
-      >
-        <Typography variant="h5">{boardDetails.name}</Typography>
-      </AppBar>
-      <div
-        style={{
-          display: 'flex',
-          width: '100vw',
-          height: '83vh',
-          overflowX: 'scroll',
-          backgroundColor: '#0179BF',
-          gap: '15px',
-          padding: '20px',
-        }}
-      >
-        {listsInBoard.map((ele) => (
-          <div key={ele.id}>
-            <BoardList
-              ele={ele}
-              handleArchive={() => handleArchive(ele.id)}
-            />
-          </div>
-        ))}
+    <>
+      {error !== null ? (
+        <Alert variant="filled" severity="error">
+          {error}
+        </Alert>
+      ) : (
+        <section>
+          <CssBaseline />
+          <AppBar
+            position="relative"
+            style={{
+              height: '7vh',
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '30px',
+            }}
+          >
+            <Typography variant="h5">{boardDetails.name}</Typography>
+          </AppBar>
+          <div
+            style={{
+              display: 'flex',
+              width: '100vw',
+              height: '83vh',
+              overflowX: 'scroll',
+              backgroundColor: '#0179BF',
+              gap: '15px',
+              padding: '20px',
+            }}
+          >
+            {loading ? (
+              // <p>Loading...</p>
+              <ShimmerLoader
+                count={4}
+                width={250}
+                height={100}
+                marginRight="15px"
+              />
+            ) : (
+              <>
+                {listsInBoard.map((ele) => (
+                  <div key={ele.id}>
+                    <BoardList
+                      ele={ele}
+                      handleArchive={() => handleArchive(ele.id)}
+                    />
+                  </div>
+                ))}
 
-        {isAddingList ? (
-          <AddListForm
-            onCancel={handleCancelAddList}
-            onListNameSubmit={handleAddListSubmit}
-          />
-        ) : (
-          <List style={newListStyle} onClick={handleCreateNewList}>
-            <ListItem>+ Add another list</ListItem>
-          </List>
-        )}
-      </div>
-    </section>
+                {isAddingList ? (
+                  <AddListForm
+                    onCancel={handleCancelAddList}
+                    onListNameSubmit={handleAddListSubmit}
+                  />
+                ) : (
+                  <List
+                    style={{
+                      height: '50px',
+                      width: '250px',
+                      backgroundColor: 'white',
+                      borderRadius: '15px',
+                      cursor: 'pointer',
+                      flexShrink: '0',
+                    }}
+                    onClick={handleCreateNewList}
+                  >
+                    <ListItem>+ Add another list</ListItem>
+                  </List>
+                )}
+              </>
+            )}
+          </div>
+        </section>
+      )}
+    </>
   );
 }
 

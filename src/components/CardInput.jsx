@@ -27,7 +27,7 @@ function CardInput({
           .catch((error) => {
             console.error('Error creating card:', error);
           })
-      : console.log('card name cannot be empty');
+      : onClose();
 
     setCardText('');
   }
