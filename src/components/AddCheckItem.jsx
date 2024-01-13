@@ -5,16 +5,11 @@ function AddCheckItem(props) {
   const { handleCancel, setItemValue, itemValue, handleAddItem } =
     props;
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '20px 0',
-      }}
-    >
+    <div id="addCardItem">
       <input
         style={{ width: '100%', height: '70px' }}
         type="text"
+        autoFocus
         value={itemValue}
         placeholder="Add an item"
         onChange={(e) => setItemValue(e.target.value)}

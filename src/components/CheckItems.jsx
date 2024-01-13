@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react/prop-types */
 import { Alert, Checkbox } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deleteACheckItem, updateCheckBoxes } from '../API';

@@ -81,6 +81,7 @@ function CreatePopover(props) {
           <input
             type="text"
             name="boardName"
+            autoFocus
             autoComplete="off"
             value={boardName}
             onChange={(e) => setBoardName(e.target.value)}

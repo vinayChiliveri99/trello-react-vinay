@@ -8,7 +8,7 @@ function WorkSpaceCard(props) {
 
   return (
     <>
-      <CardActionArea style={cardStyle} onClick={handleBoardOpening}>
+      <CardActionArea onClick={handleBoardOpening}>
         <Card style={cardStyle}>
           <Typography variant="subtitle1" style={contentStyle}>
             {name}
