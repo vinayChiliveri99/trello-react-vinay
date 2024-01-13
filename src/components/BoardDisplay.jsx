@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Alert,
-  AppBar,
   CssBaseline,
   List,
   ListItem,
@@ -95,20 +94,23 @@ function BoardDisplay() {
     );
   }
 
+  console.log(boardDetails.prefs);
+
   return (
     <section>
       <CssBaseline />
-      <AppBar
-        position="relative"
+      <div
         style={{
+          position: 'relative',
           height: '7vh',
           display: 'flex',
-          justifyContent: 'center',
           padding: '30px',
+          alignItems: 'center',
+          backgroundColor: 'rgba(255, 255, 255, 0.219)',
         }}
       >
         <Typography variant="h5">{boardDetails.name}</Typography>
-      </AppBar>
+      </div>
       <div
         style={{
           display: 'flex',
@@ -118,6 +120,9 @@ function BoardDisplay() {
           backgroundColor: '#0179BF',
           gap: '15px',
           padding: '20px',
+          backgroundImage: `url(${boardDetails?.prefs?.backgroundImage})`,
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
         }}
       >
         {loading ? (
