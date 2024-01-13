@@ -30,7 +30,7 @@ function Boards(props) {
       .catch((err) => {
         console.log(err);
         setErrorMessage(
-          'Error while getting boards data. Please try again'
+          `${err} while getting boards data. Please try again`
         );
       });
   }, []);

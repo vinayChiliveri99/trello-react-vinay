@@ -19,7 +19,7 @@ function AllCards(props) {
       .catch((err) => {
         console.error('error while archiving the card', err);
         setErrorMessage(
-          'Error while archiving the card, Please try again..'
+          `${err} while archiving the card, Please try again..`
         );
       });
   }

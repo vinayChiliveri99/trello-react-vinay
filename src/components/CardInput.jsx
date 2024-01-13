@@ -33,7 +33,7 @@ function CardInput({
           })
           .catch((error) => {
             console.error('Error creating card:', error);
-            setErrorMessage('Error while creating a new card');
+            setErrorMessage(`${error} while creating a new card`);
           })
       : onClose(); // if the title is empty, the form closes.
 

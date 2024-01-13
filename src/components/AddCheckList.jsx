@@ -25,7 +25,7 @@ function AddCheckList(props) {
           err
         );
         setErrorMessage(
-          'Failed to add new checklist, Please try again..'
+          `${err} Failed to add new checklist, Please try again..`
         );
       });
 
@@ -69,6 +69,7 @@ function AddCheckList(props) {
         <p>Title</p>
         <input
           type="text"
+          autoFocus
           style={{ height: '40px', marginBottom: '10px' }}
           value={checklistName}
           onChange={(e) => setChecklistName(e.target.value)}

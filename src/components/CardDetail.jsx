@@ -33,7 +33,7 @@ export default function CardDetail({
         .catch((err) => {
           console.log('error while fetching checklist data', err);
           setErrorMessage(
-            'Error while getting the checklits data in a card, please try again..'
+            `${err} while getting the checklits data in a card, please try again..`
           );
         });
     }

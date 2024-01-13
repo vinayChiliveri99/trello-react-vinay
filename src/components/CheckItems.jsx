@@ -23,7 +23,7 @@ function CheckItems(props) {
       .catch((error) => {
         console.error('Error deleting check item:', error);
         setErrorMessage(
-          'Error while deleting a checkitem, please try again..'
+          `${error} while deleting a checkitem, please try again..`
         );
       });
   }
@@ -48,7 +48,7 @@ function CheckItems(props) {
       .catch((error) => {
         console.error('Error updating checkitem state:', error);
         setErrorMessage(
-          'Error while updating the checkitem state, please try again..'
+          `${error} while updating the checkitem state, please try again..`
         );
       });
   }

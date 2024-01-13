@@ -32,7 +32,7 @@ function CreatePopover(props) {
       .catch((error) => {
         console.log('error while creating a new board', error);
         setErrorMessage(
-          'Error while creating the new board, please try again..'
+          `${error} while creating the new board, please try again..`
         );
       });
   }

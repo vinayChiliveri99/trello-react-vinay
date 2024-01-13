@@ -25,7 +25,7 @@ function CheckList(props) {
       .catch((err) => {
         console.log('error while deleting the checklist', err);
         setErrorMessage(
-          'Error while deleting the checklist, please try again..'
+          `${err} while deleting the checklist, please try again..`
         );
       });
   }
@@ -41,7 +41,7 @@ function CheckList(props) {
       .catch((err) => {
         console.log(err);
         setErrorMessage(
-          'Error while fetching the checkitems data, please try again..'
+          `${err} while fetching the checkitems data, please try again..`
         );
       });
   }, [singleCheckListData.id]);
@@ -66,7 +66,7 @@ function CheckList(props) {
       .catch((err) => {
         console.log(err);
         setErrorMessage(
-          'Error while adding the checkItem (task) to the checklist, please try again..'
+          `${err} while adding the checkItem (task) to the checklist, please try again..`
         );
       });
   }

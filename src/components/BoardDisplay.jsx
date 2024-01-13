@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Alert,
+  AppBar,
   CssBaseline,
   List,
   ListItem,
@@ -41,7 +42,7 @@ function BoardDisplay() {
         .catch((error) => {
           console.error('Error while fetching data:', error);
           setError(
-            'Error while fetching lists in a board, Please try again..'
+            `${error} while fetching lists in a board, Please try again..`
           );
         })
         .finally(() => {
@@ -65,7 +66,7 @@ function BoardDisplay() {
       .then((data) => setListsInBoard([...listsInBoard, data]))
       .catch((err) => {
         console.log('Error while creating the list', err);
-        setError('Error while creating the list');
+        setError(`${err} while creating the list`);
       });
   }
 
@@ -81,7 +82,7 @@ function BoardDisplay() {
       .catch((error) => {
         console.error('Error while archiving the list', error);
         setError(
-          'Error while archiving the list, please try again..'
+          `${error} Error while archiving the list, please try again..`
         );
       });
   }
@@ -99,18 +100,18 @@ function BoardDisplay() {
   return (
     <section>
       <CssBaseline />
-      <div
+      <AppBar
         style={{
           position: 'relative',
           height: '7vh',
           display: 'flex',
           padding: '30px',
-          alignItems: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.219)',
+          justifyContent: 'center',
+          // backgroundColor: 'rgba(255, 255, 255, 0.219)',
         }}
       >
         <Typography variant="h5">{boardDetails.name}</Typography>
-      </div>
+      </AppBar>
       <div
         style={{
           display: 'flex',
@@ -120,9 +121,9 @@ function BoardDisplay() {
           backgroundColor: '#0179BF',
           gap: '15px',
           padding: '20px',
-          backgroundImage: `url(${boardDetails?.prefs?.backgroundImage})`,
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
+          // backgroundImage: `url(${boardDetails?.prefs?.backgroundImage})`,
+          // backgroundPosition: 'center',
+          // backgroundSize: 'cover',
         }}
       >
         {loading ? (

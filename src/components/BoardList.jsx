@@ -36,7 +36,7 @@ function BoardList(props) {
         .catch((error) => {
           console.log('error while setting cards data', error);
           setErrorMessage(
-            'Error while getting the cards data of a list'
+            `${error} while getting the cards data of a list`
           );
         });
     };
