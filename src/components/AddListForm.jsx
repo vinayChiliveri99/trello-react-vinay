@@ -30,6 +30,7 @@ function AddListForm({ onCancel, onListNameSubmit }) {
         {/* as we gave input as required, empty input handling does here */}
         <input
           type="text"
+          autoFocus
           value={listName}
           onChange={handleInputChange}
           placeholder="Enter list title..."

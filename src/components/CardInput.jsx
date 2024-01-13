@@ -53,6 +53,7 @@ function CardInput({
       <CardContent>
         <Input
           type="text"
+          autoFocus
           value={cardText}
           onChange={(e) => setCardText(e.target.value)}
           placeholder="Enter a title for this card..."

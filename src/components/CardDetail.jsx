@@ -74,7 +74,9 @@ export default function CardDetail({
           </p>
           <p>in list {listName}</p>
         </div>
-        <p onClick={onClose}>X</p>
+        <p style={{ cursor: 'pointer' }} onClick={onClose}>
+          X
+        </p>
       </header>
 
       <section

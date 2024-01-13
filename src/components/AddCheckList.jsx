@@ -1,35 +1,58 @@
 /* eslint-disable react/prop-types */
 import { Alert, AlertTitle, Button } from '@mui/material';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { addNewCheckList } from '../API';
+
+// Reducer function
+const addCheckListReducer = (state, action) => {
+  switch (action.type) {
+    case 'set_checklist_name':
+      return { ...state, checklistName: action.payload };
+    case 'set_error_message':
+      return { ...state, errorMessage: action.payload };
+    default:
+      return state;
+  }
+};
 
 function AddCheckList(props) {
   const { cardId, setCheckListData, setAddNewCheckList } = props;
-  const [checklistName, setChecklistName] = useState('Checklist');
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const initialState = {
+    checklistName: 'Checklist',
+    errorMessage: null,
+  };
+
+  const [state, dispatch] = useReducer(
+    addCheckListReducer,
+    initialState
+  );
+  const { checklistName, errorMessage } = state;
 
   function closeNewCheckList() {
     setAddNewCheckList(false);
   }
 
-  function handleAddNewCheckList(checklistName, cardId) {
-    // creating a new checklist to the card
+  function handleAddNewCheckList() {
+    // creating a new checklist for the card
 
     addNewCheckList(checklistName, cardId)
       .then((data) =>
-        setCheckListData((ChekListData) => [...ChekListData, data])
+        setCheckListData((checkListData) => [...checkListData, data])
       )
       .catch((err) => {
         console.log(
           'error while creating/adding a new checklist',
           err
         );
-        setErrorMessage(
-          'Failed to add new checklist, Please try again..'
-        );
+        dispatch({
+          type: 'set_error_message',
+          payload:
+            'Failed to add a new checklist, Please try again..',
+        });
       });
 
-    setChecklistName('Checklist');
+    dispatch({ type: 'set_checklist_name', payload: 'Checklist' });
     closeNewCheckList();
   }
 
@@ -42,41 +65,44 @@ function AddCheckList(props) {
     );
   }
 
+  const addStyles = {
+    position: 'absolute',
+    top: '100%',
+    zIndex: '100',
+    height: '250px',
+    width: '250px',
+    border: '1px solid black',
+    padding: '5px',
+  };
+
+  const titleStyles = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'space-evenly',
+    marginLeft: '20px',
+  };
+
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '100%',
-        zIndex: '100',
-        height: '250px',
-        width: '250px',
-        border: '1px solid black',
-        padding: '5px',
-      }}
-    >
+    <div style={addStyles}>
       <p style={{ display: 'flex', justifyContent: 'space-around' }}>
         Add checklist <span onClick={closeNewCheckList}>X</span>
       </p>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          justifyContent: 'space-evenly',
-          marginLeft: '20px',
-        }}
-      >
+      <div style={titleStyles}>
         <p>Title</p>
         <input
           type="text"
           style={{ height: '40px', marginBottom: '10px' }}
           value={checklistName}
-          onChange={(e) => setChecklistName(e.target.value)}
+          autoFocus
+          onChange={(e) =>
+            dispatch({
+              type: 'set_checklist_name',
+              payload: e.target.value,
+            })
+          }
         />
-        <Button
-          onClick={() => handleAddNewCheckList(checklistName, cardId)}
-          variant="contained"
-        >
+        <Button onClick={handleAddNewCheckList} variant="contained">
           Add
         </Button>
       </div>

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Alert, Button } from '@mui/material';
+import { Alert, Button, CardActionArea } from '@mui/material';
 import CheckItems from './CheckItems';
 import { useEffect, useState } from 'react';
 import AddCheckItem from './AddCheckItem';
@@ -121,9 +121,19 @@ function CheckList(props) {
         </div>
       ))}
 
-      <div onClick={handleAddCheckItem} style={{ cursor: 'pointer' }}>
-        Add an item
-      </div>
+      <CardActionArea>
+        <div
+          onClick={handleAddCheckItem}
+          style={{
+            cursor: 'pointer',
+            height: '50px',
+            padding: '20px',
+            fontSize: '16px',
+          }}
+        >
+          Add an item
+        </div>
+      </CardActionArea>
       {addCheckItem && (
         <AddCheckItem
           handleCancel={handleCancel}
