@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Alert, Button, CardActionArea } from '@mui/material';
 import CheckItems from './CheckItems';
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import AddCheckItem from './AddCheckItem';
 import {
   addNewCheckItem,
@@ -9,13 +9,35 @@ import {
   getCheckItemsData,
 } from '../API';
 
-function CheckList(props) {
-  const { singleCheckListData, setCheckListData, cardId } = props;
+// Define the actions for the reducer
+function reducer(state, action) {
+  switch (action.type) {
+    case 'SET_ADD_CHECK_ITEM':
+      return { ...state, addCheckItem: action.payload };
+    case 'SET_ITEM_VALUE':
+      return { ...state, itemValue: action.payload };
+    case 'SET_ERROR_MESSAGE':
+      return { ...state, errorMessage: action.payload };
+    default:
+      return state;
+  }
+}
 
+const CheckList = (props) => {
+  const { singleCheckListData, setCheckListData, cardId } = props;
   const [checkItemsList, setCheckItemsList] = useState([]);
-  const [addCheckItem, setAddCheckItem] = useState(false);
-  const [itemValue, setItemValue] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  const initialState = {
+    addCheckItem: false,
+    itemValue: '',
+    errorMessage: null,
+  };
+
+  // Use the reducer hook
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  // Destructure state
+  const { addCheckItem, itemValue, errorMessage } = state;
 
   // to delete a checklist from a card.
 
@@ -24,9 +46,10 @@ function CheckList(props) {
       .then((data) => setCheckListData(data))
       .catch((err) => {
         console.log('error while deleting the checklist', err);
-        setErrorMessage(
-          'Error while deleting the checklist, please try again..'
-        );
+        dispatch({
+          type: 'SET_ERROR_MESSAGE',
+          payload: `${err} while deleting the checklist, please try again..`,
+        });
       });
   }
 
@@ -40,34 +63,41 @@ function CheckList(props) {
       })
       .catch((err) => {
         console.log(err);
-        setErrorMessage(
-          'Error while fetching the checkitems data, please try again..'
-        );
+        dispatch({
+          type: 'SET_ERROR_MESSAGE',
+          payload: `${err} while fetching the checkitems data, please try again..`,
+        });
       });
   }, [singleCheckListData.id]);
 
   // the popover, used to enter a checkItem (new task)
   function handleAddCheckItem() {
-    setAddCheckItem(!addCheckItem);
+    // Dispatch action to toggle addCheckItem
+    dispatch({ type: 'SET_ADD_CHECK_ITEM', payload: !addCheckItem });
   }
 
   // cancel button in the popover, where we enter a checkitem (new task)
   function handleCancel() {
-    setAddCheckItem(false);
+    // Dispatch action to set addCheckItem to false
+    dispatch({ type: 'SET_ADD_CHECK_ITEM', payload: false });
   }
 
   // adding check item to the checklist, addNewCheckItem is a post request.
+  // Dispatch action to set itemValue
+
   function handleAddItem() {
+    dispatch({ type: 'SET_ITEM_VALUE', payload: '' });
+
     addNewCheckItem(singleCheckListData.id, itemValue)
       .then((data) => {
         setCheckItemsList([...checkItemsList, data]);
-        setItemValue('');
       })
       .catch((err) => {
         console.log(err);
-        setErrorMessage(
-          'Error while adding the checkItem (task) to the checklist, please try again..'
-        );
+        dispatch({
+          type: 'SET_ERROR_MESSAGE',
+          payload: `${err} while adding the checkItem (task) to the checklist, please try again..`,
+        });
       });
   }
 
@@ -106,8 +136,6 @@ function CheckList(props) {
         </Button>
       </div>
 
-      {/* <div>Progress bar</div> */}
-
       {checkItemsList.map((ele) => (
         <div key={ele.id}>
           <CheckItems
@@ -137,13 +165,15 @@ function CheckList(props) {
       {addCheckItem && (
         <AddCheckItem
           handleCancel={handleCancel}
-          setItemValue={setItemValue}
+          setItemValue={(value) =>
+            dispatch({ type: 'SET_ITEM_VALUE', payload: value })
+          }
           handleAddItem={handleAddItem}
           itemValue={itemValue}
         />
       )}
     </div>
   );
-}
+};
 
 export default CheckList;
