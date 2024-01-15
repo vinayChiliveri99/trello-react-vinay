@@ -9,7 +9,7 @@ import {
   getCheckItemsData,
 } from '../API';
 
-// Define the actions for the reducer
+// reducer function
 function reducer(state, action) {
   switch (action.type) {
     case 'SET_ADD_CHECK_ITEM':
@@ -33,10 +33,9 @@ const CheckList = (props) => {
     errorMessage: null,
   };
 
-  // Use the reducer hook
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // Destructure state
+  // destructuring state
   const { addCheckItem, itemValue, errorMessage } = state;
 
   // to delete a checklist from a card.
