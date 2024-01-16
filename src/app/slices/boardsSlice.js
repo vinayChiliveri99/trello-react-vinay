@@ -7,10 +7,13 @@ const boardsSlice = createSlice({
     setBoards: (state, action) => {
       return action.payload;
     },
+    addNewBoard: (state, action) => {
+      return state.push(action.payload);
+    },
   },
 });
 
-export const { setBoards } = boardsSlice.actions;
+export const { setBoards, addNewBoard } = boardsSlice.actions;
 export default boardsSlice.reducer;
 
 /*

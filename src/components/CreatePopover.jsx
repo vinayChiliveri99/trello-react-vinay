@@ -4,21 +4,23 @@ import { Alert, Button, Container, Popover } from '@mui/material';
 import cardsPhoto from '../../assets/cards.png';
 import { useNavigate } from 'react-router-dom';
 import { addNewBoard } from '../API';
+import { useDispatch, useSelector } from 'react-redux';
+import { setError, clearError } from '../app/slices/errorSlice';
 
 function CreatePopover(props) {
   const navigate = useNavigate();
   const { createPopoverAnchor, handleCreateClose } = props;
 
   const [boardName, setBoardName] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
+
+  // errors being handled in errorSlice
+
+  const errorMessage = useSelector((state) => state.error);
+  const dispatch = useDispatch();
 
   function handleCreateBoard(e) {
     e.preventDefault();
 
-    if (boardName.length === 0) {
-      // console.log('give some value');
-      return;
-    }
     // resetting the input value to be empty after submit & closing the popover
     setBoardName('');
     handleCreateClose();
@@ -28,11 +30,14 @@ function CreatePopover(props) {
       .then((data) => {
         // redirecting to open the board in a new page
         navigate(`/boards/${data.id}`);
+        clearError();
       })
       .catch((error) => {
         console.log('error while creating a new board', error);
-        setErrorMessage(
-          'Error while creating the new board, please try again..'
+        dispatch(
+          setError(
+            `${error} while creating the new board, please try again..`
+          )
         );
       });
   }
