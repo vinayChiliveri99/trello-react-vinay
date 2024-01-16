@@ -12,25 +12,22 @@ import { getAllBoards } from '../API';
 import ShimmerLoader from './ShimmerLoader';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBoards } from '../app/slices/boardsSlice';
-import { setError } from '../app/slices/errorSlice';
 
 function Boards(props) {
   const { handleCreateClick } = props;
   // const [boardsData, setBoardsData] = useState([]);
 
-  // getting boards data, error from the boardsSlice
+  // getting boards data from the boardsSlice
   const boardsData = useSelector((state) => state.boards);
-  const errorMessage = useSelector((state) => state.error);
   const dispatch = useDispatch();
 
-  // const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
   // getting the boards data to display boards.
   // getAllBoards is a get req present in API.js
-
   useEffect(() => {
     getAllBoards()
       .then((data) => {
@@ -43,10 +40,8 @@ function Boards(props) {
       })
       .catch((err) => {
         console.log(err);
-        dispatch(
-          setError(
-            `${err} while getting boards data. Please try again`
-          )
+        setErrorMessage(
+          'Error while getting boards data. Please try again'
         );
       });
   }, [dispatch]);

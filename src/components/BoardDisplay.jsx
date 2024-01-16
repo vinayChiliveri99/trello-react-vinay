@@ -17,8 +17,6 @@ import {
   getListsInABoard,
 } from '../API';
 import ShimmerLoader from './ShimmerLoader';
-import { useDispatch, useSelector } from 'react-redux';
-import { setError } from '../app/slices/errorSlice';
 
 function BoardDisplay() {
   let { id } = useParams();
@@ -27,9 +25,7 @@ function BoardDisplay() {
   const [boardDetails, setBoardDetails] = useState({});
   const [isAddingList, setIsAddingList] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const error = useSelector((state) => state.error);
-  const dispatch = useDispatch();
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     function fetchData() {
@@ -37,6 +33,7 @@ function BoardDisplay() {
       getListsInABoard(id)
         .then((listsData) => {
           setListsInBoard(listsData);
+
           return getBoardDetails(id);
         })
         .then((boardDetailsData) => {
@@ -45,9 +42,7 @@ function BoardDisplay() {
         .catch((error) => {
           console.error('Error while fetching data:', error);
           setError(
-            dispatch(
-              `${error} while fetching lists in a board, Please try again..`
-            )
+            'Error while fetching lists in a board, Please try again..'
           );
         })
         .finally(() => {
@@ -56,7 +51,7 @@ function BoardDisplay() {
     }
 
     fetchData();
-  }, [id, dispatch]);
+  }, [id]);
 
   function handleCreateNewList() {
     setIsAddingList(true);
