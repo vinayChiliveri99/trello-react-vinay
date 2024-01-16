@@ -4,6 +4,8 @@ import { Alert, Button, Container, Popover } from '@mui/material';
 import cardsPhoto from '../../assets/cards.png';
 import { useNavigate } from 'react-router-dom';
 import { addNewBoard } from '../API';
+import { addBoard } from '../app/slices/boardsSlice';
+import { useDispatch } from 'react-redux';
 
 function CreatePopover(props) {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ function CreatePopover(props) {
 
   const [boardName, setBoardName] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
+  const dispatch = useDispatch();
 
   function handleCreateBoard(e) {
     e.preventDefault();
@@ -23,6 +26,7 @@ function CreatePopover(props) {
     addNewBoard(boardName)
       .then((data) => {
         // redirecting to open the board in a new page
+        dispatch(addBoard(data));
         navigate(`/boards/${data.id}`);
       })
       .catch((error) => {
