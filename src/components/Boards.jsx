@@ -10,30 +10,47 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { getAllBoards } from '../API';
 import ShimmerLoader from './ShimmerLoader';
+import { useDispatch, useSelector } from 'react-redux';
+import { setBoards } from '../app/slices/boardsSlice';
+import { setError, clearError } from '../app/slices/errorSlice';
 
 function Boards(props) {
   const { handleCreateClick } = props;
-  const [boardsData, setBoardsData] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  // const [boardsData, setBoardsData] = useState([]);
+
+  // getting boards data, error from the boardsSlice
+  const boardsData = useSelector((state) => state.boards);
+  const errorMessage = useSelector((state) => state.error);
+  const dispatch = useDispatch();
+
+  // const [errorMessage, setErrorMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
   // getting the boards data to display boards.
   // getAllBoards is a get req present in API.js
+
   useEffect(() => {
     getAllBoards()
       .then((data) => {
-        setBoardsData(data);
+        // setBoardsData(data);
+
+        // dispatching data to setBoards, which is managed inside boards slice.
+
+        dispatch(setBoards(data));
+        dispatch(clearError());
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
-        setErrorMessage(
-          'Error while getting boards data. Please try again'
+        dispatch(
+          setError(
+            `${err} while getting boards data. Please try again`
+          )
         );
       });
-  }, []);
+  }, [dispatch]);
 
   const createCardStyle = {
     height: '100px',
