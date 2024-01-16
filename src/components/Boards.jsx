@@ -12,7 +12,7 @@ import { getAllBoards } from '../API';
 import ShimmerLoader from './ShimmerLoader';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBoards } from '../app/slices/boardsSlice';
-import { setError, clearError } from '../app/slices/errorSlice';
+import { setError } from '../app/slices/errorSlice';
 
 function Boards(props) {
   const { handleCreateClick } = props;
@@ -39,7 +39,6 @@ function Boards(props) {
         // dispatching data to setBoards, which is managed inside boards slice.
 
         dispatch(setBoards(data));
-        dispatch(clearError());
         setLoading(false);
       })
       .catch((err) => {

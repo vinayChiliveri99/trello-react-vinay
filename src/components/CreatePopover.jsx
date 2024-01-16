@@ -5,7 +5,7 @@ import cardsPhoto from '../../assets/cards.png';
 import { useNavigate } from 'react-router-dom';
 import { addNewBoard } from '../API';
 import { useDispatch, useSelector } from 'react-redux';
-import { setError, clearError } from '../app/slices/errorSlice';
+import { setError } from '../app/slices/errorSlice';
 
 function CreatePopover(props) {
   const navigate = useNavigate();
@@ -30,7 +30,6 @@ function CreatePopover(props) {
       .then((data) => {
         // redirecting to open the board in a new page
         navigate(`/boards/${data.id}`);
-        clearError();
       })
       .catch((error) => {
         console.log('error while creating a new board', error);
