@@ -11,29 +11,39 @@ import {
 import BoardList from './BoardList';
 import AddListForm from './AddListForm';
 import {
-  archiveList,
   createNewList,
-  getBoardDetails,
   getListsInABoard,
+  archiveList,
+  getBoardDetails,
 } from '../API';
 import ShimmerLoader from './ShimmerLoader';
+
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  setListInBoard,
+  addListToBoard,
+  archiveListInBoard,
+} from '../app/slices/listsSlice';
 
 function BoardDisplay() {
   let { id } = useParams();
 
-  const [listsInBoard, setListsInBoard] = useState([]);
-  const [boardDetails, setBoardDetails] = useState({});
   const [isAddingList, setIsAddingList] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [boardDetails, setBoardDetails] = useState({});
+
+  const listsInBoard = useSelector((state) => state.lists);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     function fetchData() {
       // getting the boards in the list.
       getListsInABoard(id)
         .then((listsData) => {
-          setListsInBoard(listsData);
-
+          // setListsInBoard(listsData);
+          dispatch(setListInBoard(listsData));
           return getBoardDetails(id);
         })
         .then((boardDetailsData) => {
@@ -51,7 +61,7 @@ function BoardDisplay() {
     }
 
     fetchData();
-  }, [id]);
+  }, [id, dispatch]);
 
   function handleCreateNewList() {
     setIsAddingList(true);
@@ -63,7 +73,7 @@ function BoardDisplay() {
 
   function handleAddListSubmit(listName) {
     createNewList(listName, id)
-      .then((data) => setListsInBoard([...listsInBoard, data]))
+      .then((data) => dispatch(addListToBoard(data)))
       .catch((err) => {
         console.log('Error while creating the list', err);
         setError('Error while creating the list');
@@ -72,12 +82,9 @@ function BoardDisplay() {
 
   function handleArchive(listId) {
     archiveList(listId)
+      // eslint-disable-next-line no-unused-vars
       .then((data) => {
-        if (data.id) {
-          setListsInBoard(
-            listsInBoard.filter((ele) => ele.id !== data.id)
-          );
-        }
+        dispatch(archiveListInBoard({ id: listId }));
       })
       .catch((error) => {
         console.error('Error while archiving the list', error);
@@ -107,7 +114,9 @@ function BoardDisplay() {
           padding: '30px',
         }}
       >
-        <Typography variant="h5">{boardDetails.name}</Typography>
+        <Typography variant="h5">
+          {boardDetails && boardDetails.name}
+        </Typography>
       </AppBar>
       <div
         style={{
@@ -130,14 +139,15 @@ function BoardDisplay() {
           />
         ) : (
           <>
-            {listsInBoard.map((ele) => (
-              <div key={ele.id}>
-                <BoardList
-                  ele={ele}
-                  handleArchive={() => handleArchive(ele.id)}
-                />
-              </div>
-            ))}
+            {listsInBoard &&
+              listsInBoard.map((ele) => (
+                <div key={ele.id}>
+                  <BoardList
+                    ele={ele}
+                    handleArchive={() => handleArchive(ele.id)}
+                  />
+                </div>
+              ))}
 
             {isAddingList ? (
               <AddListForm
