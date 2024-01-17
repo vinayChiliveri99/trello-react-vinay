@@ -8,15 +8,14 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { createCard } from '../API';
+import { addCard } from '../app/slices/cardsSlice';
+import { useDispatch } from 'react-redux';
 
-function CardInput({
-  listId,
-  onClose,
-  setIndCardsList,
-  indCardsList,
-}) {
+function CardInput({ listId, onClose }) {
   const [cardText, setCardText] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const dispatch = useDispatch();
 
   // function to create a new card, after giving some value
   // need to handle error, when user gives a empty value to name
@@ -28,8 +27,7 @@ function CardInput({
     cardText.length !== 0
       ? createCard(listId, cardText)
           .then((data) => {
-            // console.log('Card created', data);
-            setIndCardsList([...indCardsList, data]);
+            dispatch(addCard({ id: listId, data: data }));
           })
           .catch((error) => {
             console.error('Error creating card:', error);

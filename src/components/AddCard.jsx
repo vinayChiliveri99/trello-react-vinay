@@ -3,7 +3,7 @@ import { useState } from 'react';
 import CardInput from './CardInput';
 
 function AddCard(props) {
-  const { listId, setIndCardsList, indCardsList } = props;
+  const { listId } = props;
   const [isCardOpen, setIsCardOpen] = useState(false);
 
   function handleAddCardClick() {
@@ -23,12 +23,7 @@ function AddCard(props) {
         + Add a card
       </div>
       {isCardOpen && (
-        <CardInput
-          listId={listId}
-          onClose={handleCloseCard}
-          indCardsList={indCardsList}
-          setIndCardsList={setIndCardsList}
-        />
+        <CardInput listId={listId} onClose={handleCloseCard} />
       )}
     </div>
   );

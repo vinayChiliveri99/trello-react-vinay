@@ -11,12 +11,15 @@ import ArchivePopOver from './ArchivePopOver';
 import AllCards from './AllCards';
 import AddCard from './AddCard';
 import { fetchCardsList } from '../API';
+import { setCardsInList } from '../app/slices/cardsSlice';
+import { useDispatch } from 'react-redux';
 
 function BoardList(props) {
   const { ele, handleArchive } = props;
   const [anchorEl, setAnchorEl] = useState(null);
-  const [indCardsList, setIndCardsList] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -31,7 +34,8 @@ function BoardList(props) {
     const fetchData = () => {
       fetchCardsList(ele.id)
         .then((data) => {
-          setIndCardsList(data);
+          // setIndCardsList(data);
+          dispatch(setCardsInList({ id: ele.id, data: data }));
         })
         .catch((error) => {
           console.log('error while setting cards data', error);
@@ -42,7 +46,7 @@ function BoardList(props) {
     };
 
     fetchData();
-  }, [ele.id]);
+  }, [ele.id, dispatch]);
 
   const listStyle = {
     width: '250px',
@@ -82,16 +86,8 @@ function BoardList(props) {
             handleClose={handleClose}
           />
         </ListItem>
-        <AllCards
-          indCardsList={indCardsList}
-          setIndCardsList={setIndCardsList}
-          listName={ele.name}
-        />
-        <AddCard
-          listId={ele.id}
-          indCardsList={indCardsList}
-          setIndCardsList={setIndCardsList}
-        />
+        <AllCards listId={ele.id} listName={ele.name} />
+        <AddCard listId={ele.id} />
       </List>
     </>
   );
