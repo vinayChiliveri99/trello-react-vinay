@@ -14,8 +14,8 @@ const cardsSlice = createSlice({
       };
     },
     addCard: (state, action) => {
-      console.log(state.data[action.payload.id]);
-      console.log(action.payload.data);
+      // console.log(state.data[action.payload.id]);
+      // console.log(action.payload.data);
       state.data = {
         ...state.data,
         [action.payload.id]: [

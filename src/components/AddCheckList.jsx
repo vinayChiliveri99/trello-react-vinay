@@ -1,58 +1,40 @@
 /* eslint-disable react/prop-types */
 import { Alert, AlertTitle, Button } from '@mui/material';
-import { useReducer } from 'react';
+import { useState } from 'react';
 import { addNewCheckList } from '../API';
-
-// Reducer function
-const addCheckListReducer = (state, action) => {
-  switch (action.type) {
-    case 'set_checklist_name':
-      return { ...state, checklistName: action.payload };
-    case 'set_error_message':
-      return { ...state, errorMessage: action.payload };
-    default:
-      return state;
-  }
-};
+import { addCheckList } from '../app/slices/checkListSlice';
+import { useDispatch } from 'react-redux';
 
 function AddCheckList(props) {
-  const { cardId, setCheckListData, setAddNewCheckList } = props;
+  const { cardId, setAddNewCheckList } = props;
+  const [checklistName, setChecklistName] = useState('Checklist');
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const initialState = {
-    checklistName: 'Checklist',
-    errorMessage: null,
-  };
-
-  const [state, dispatch] = useReducer(
-    addCheckListReducer,
-    initialState
-  );
-  const { checklistName, errorMessage } = state;
+  const dispatch = useDispatch();
 
   function closeNewCheckList() {
     setAddNewCheckList(false);
   }
 
-  function handleAddNewCheckList() {
-    // creating a new checklist for the card
+  function handleAddNewCheckList(checklistName, cardId) {
+    // creating a new checklist to the card
 
     addNewCheckList(checklistName, cardId)
-      .then((data) =>
-        setCheckListData((checkListData) => [...checkListData, data])
-      )
+      .then((data) => {
+        // setCheckListData((ChekListData) => [...ChekListData, data]);
+        dispatch(addCheckList({ id: cardId, data: data }));
+      })
       .catch((err) => {
         console.log(
           'error while creating/adding a new checklist',
           err
         );
-        dispatch({
-          type: 'set_error_message',
-          payload:
-            'Failed to add a new checklist, Please try again..',
-        });
+        setErrorMessage(
+          `${err} Failed to add new checklist, Please try again..`
+        );
       });
 
-    dispatch({ type: 'set_checklist_name', payload: 'Checklist' });
+    setChecklistName('Checklist');
     closeNewCheckList();
   }
 
@@ -65,44 +47,42 @@ function AddCheckList(props) {
     );
   }
 
-  const addStyles = {
-    position: 'absolute',
-    top: '100%',
-    zIndex: '100',
-    height: '250px',
-    width: '250px',
-    border: '1px solid black',
-    padding: '5px',
-  };
-
-  const titleStyles = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    justifyContent: 'space-evenly',
-    marginLeft: '20px',
-  };
-
   return (
-    <div style={addStyles}>
+    <div
+      style={{
+        position: 'absolute',
+        top: '100%',
+        zIndex: '100',
+        height: '250px',
+        width: '250px',
+        border: '1px solid black',
+        padding: '5px',
+      }}
+    >
       <p style={{ display: 'flex', justifyContent: 'space-around' }}>
         Add checklist <span onClick={closeNewCheckList}>X</span>
       </p>
-      <div style={titleStyles}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          justifyContent: 'space-evenly',
+          marginLeft: '20px',
+        }}
+      >
         <p>Title</p>
         <input
           type="text"
+          autoFocus
           style={{ height: '40px', marginBottom: '10px' }}
           value={checklistName}
-          autoFocus
-          onChange={(e) =>
-            dispatch({
-              type: 'set_checklist_name',
-              payload: e.target.value,
-            })
-          }
+          onChange={(e) => setChecklistName(e.target.value)}
         />
-        <Button onClick={handleAddNewCheckList} variant="contained">
+        <Button
+          onClick={() => handleAddNewCheckList(checklistName, cardId)}
+          variant="contained"
+        >
           Add
         </Button>
       </div>
