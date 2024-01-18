@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-// ShimmerLoader.jsx
 import { Skeleton } from '@mui/material';
 
 const ShimmerLoader = ({ count, width, height, marginRight }) => {

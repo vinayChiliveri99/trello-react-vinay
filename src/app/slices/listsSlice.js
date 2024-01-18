@@ -1,4 +1,3 @@
-// listsSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const listsSlice = createSlice({
