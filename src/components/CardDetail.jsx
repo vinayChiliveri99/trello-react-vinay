@@ -7,9 +7,6 @@ import AddCheckList from './AddCheckList';
 import { getCheckListsInACard } from '../API';
 import { Alert } from '@mui/material';
 
-import { setCheckList } from '../app/slices/checkListSlice';
-import { useDispatch, useSelector } from 'react-redux';
-
 export default function CardDetail({
   open,
   anchorEl,
@@ -17,15 +14,11 @@ export default function CardDetail({
   cardData,
   listName,
 }) {
-  // const [checkListData, setCheckListData] = useState([]);
+  const [checkListData, setCheckListData] = useState([]);
   const [addNewCheckList, setAddNewCheckList] = useState(false);
   const id = open ? 'simple-popover' : undefined;
 
   const [errorMessage, setErrorMessage] = useState(null);
-
-  const dispatch = useDispatch();
-  const checkListData = useSelector((state) => state.checklist.data);
-  // console.log('checklist data from carddetail:', checkListData);
 
   const handlePopoverClick = (event) => {
     event.stopPropagation();
@@ -36,20 +29,17 @@ export default function CardDetail({
   useEffect(() => {
     function fetchCheckLists() {
       getCheckListsInACard(cardData.id)
-        .then((data) => {
-          // setCheckListData(data)
-          dispatch(setCheckList({ id: cardData.id, data: data }));
-        })
+        .then((data) => setCheckListData(data))
         .catch((err) => {
           console.log('error while fetching checklist data', err);
           setErrorMessage(
-            'Error while getting the checklits data in a card, please try again..'
+            `${err} while getting the checklits data in a card, please try again..`
           );
         });
     }
 
     fetchCheckLists();
-  }, [cardData.id, dispatch]);
+  }, [cardData.id]);
 
   if (errorMessage !== null) {
     return <Alert severity="error">{errorMessage}</Alert>;
@@ -99,23 +89,22 @@ export default function CardDetail({
         }}
       >
         <div>
-          {Object.entries(checkListData).map(([cardId, checklists]) =>
-            checklists.map((ele) => (
-              <div
-                style={{
-                  margin: '30px 0',
-                  backgroundColor: '#F1F2F4',
-                  padding: '15px',
-                }}
-                key={ele.id}
-              >
-                <CheckList
-                  singleCheckListData={ele}
-                  cardId={cardId}
-                />
-              </div>
-            ))
-          )}
+          {checkListData.map((ele) => (
+            <div
+              style={{
+                margin: '30px 0',
+                backgroundColor: '#F1F2F4',
+                padding: '15px',
+              }}
+              key={ele.id}
+            >
+              <CheckList
+                singleCheckListData={ele}
+                setCheckListData={setCheckListData}
+                cardId={cardData.id}
+              />
+            </div>
+          ))}
         </div>
 
         <div>
@@ -141,7 +130,7 @@ export default function CardDetail({
             </button>
             {addNewCheckList ? (
               <AddCheckList
-                // setCheckListData={setCheckListData}
+                setCheckListData={setCheckListData}
                 cardId={cardData.id}
                 setAddNewCheckList={setAddNewCheckList}
               />

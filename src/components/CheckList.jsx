@@ -8,27 +8,20 @@ import {
   deleteCheckList,
   getCheckItemsData,
 } from '../API';
-import { archiveCheckList } from '../app/slices/checkListSlice';
-import { useDispatch } from 'react-redux';
 
 function CheckList(props) {
-  const { singleCheckListData, cardId } = props;
+  const { singleCheckListData, setCheckListData, cardId } = props;
 
   const [checkItemsList, setCheckItemsList] = useState([]);
   const [addCheckItem, setAddCheckItem] = useState(false);
   const [itemValue, setItemValue] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const dispatch = useDispatch();
-
   // to delete a checklist from a card.
 
   function handleDeleteCheckList(checkListId, CardId) {
     deleteCheckList(CardId, checkListId)
-      .then((data) => {
-        // setCheckListData(data)
-        dispatch(archiveCheckList({ cardId: CardId, data: data }));
-      })
+      .then((data) => setCheckListData(data))
       .catch((err) => {
         console.log('error while deleting the checklist', err);
         setErrorMessage(

@@ -2,15 +2,11 @@
 import { Alert, AlertTitle, Button } from '@mui/material';
 import { useState } from 'react';
 import { addNewCheckList } from '../API';
-import { addCheckList } from '../app/slices/checkListSlice';
-import { useDispatch } from 'react-redux';
 
 function AddCheckList(props) {
-  const { cardId, setAddNewCheckList } = props;
+  const { cardId, setCheckListData, setAddNewCheckList } = props;
   const [checklistName, setChecklistName] = useState('Checklist');
   const [errorMessage, setErrorMessage] = useState(null);
-
-  const dispatch = useDispatch();
 
   function closeNewCheckList() {
     setAddNewCheckList(false);
@@ -20,10 +16,9 @@ function AddCheckList(props) {
     // creating a new checklist to the card
 
     addNewCheckList(checklistName, cardId)
-      .then((data) => {
-        // setCheckListData((ChekListData) => [...ChekListData, data]);
-        dispatch(addCheckList({ id: cardId, data: data }));
-      })
+      .then((data) =>
+        setCheckListData((ChekListData) => [...ChekListData, data])
+      )
       .catch((err) => {
         console.log(
           'error while creating/adding a new checklist',
