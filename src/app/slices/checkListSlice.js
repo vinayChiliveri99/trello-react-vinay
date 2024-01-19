@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const checkListSlice = createSlice({
   name: 'checklist',
-  initialState: { data: {} },
+  initialState: { data: {}, errorMessage: null },
   reducers: {
     setCheckList: (state, action) => {
       state.data = {
@@ -28,9 +28,18 @@ const checkListSlice = createSlice({
         },
       };
     },
+    setErrorMessage: (state, action) => {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
 export default checkListSlice.reducer;
-export const { setCheckList, addCheckList, archiveCheckList } =
-  checkListSlice.actions;
+export const {
+  setCheckList,
+  addCheckList,
+  archiveCheckList,
+  setErrorMessage,
+} = checkListSlice.actions;
+
+// created but not used yet.
