@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import WorkSpaceCard from './WorkSpaceCard';
 import {
   Alert,
@@ -11,18 +11,22 @@ import { useNavigate } from 'react-router-dom';
 import { getAllBoards } from '../API';
 import ShimmerLoader from './ShimmerLoader';
 import { useDispatch, useSelector } from 'react-redux';
-import { setBoards } from '../app/slices/boardsSlice';
+import {
+  setBoards,
+  setErrorMessage,
+  setLoading,
+} from '../app/slices/boardsSlice';
 
 function Boards(props) {
   const { handleCreateClick } = props;
-  // const [boardsData, setBoardsData] = useState([]);
 
   // getting boards data from the boardsSlice
-  const boardsData = useSelector((state) => state.boards);
+  const boardsData = useSelector((state) => state.boards.data);
+  const errorMessage = useSelector(
+    (state) => state.boards.errorMessage
+  );
+  const loading = useSelector((state) => state.boards.isLoading);
   const dispatch = useDispatch();
-
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -34,14 +38,15 @@ function Boards(props) {
         // setBoardsData(data);
 
         // dispatching data to setBoards, which is managed inside boards slice.
-
-        dispatch(setBoards(data));
-        setLoading(false);
+        dispatch(setLoading({ isLoading: false }));
+        dispatch(setBoards({ data: data }));
       })
       .catch((err) => {
         console.log(err);
-        setErrorMessage(
-          'Error while getting boards data. Please try again'
+        dispatch(
+          setErrorMessage(
+            `${err} while getting boards data. Please try again`
+          )
         );
       });
   }, [dispatch]);
@@ -59,7 +64,7 @@ function Boards(props) {
     navigate(`/boards/${id}`);
   }
 
-  if (errorMessage !== null) {
+  if (errorMessage) {
     return (
       <Alert variant="filled" severity="error">
         {errorMessage}
