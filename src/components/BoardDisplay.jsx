@@ -23,17 +23,21 @@ import {
   setListInBoard,
   addListToBoard,
   archiveListInBoard,
+  setErrorMessage,
+  setLoading,
 } from '../app/slices/listsSlice';
 
 function BoardDisplay() {
   let { id } = useParams();
 
   const [isAddingList, setIsAddingList] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [boardDetails, setBoardDetails] = useState({});
 
-  const listsInBoard = useSelector((state) => state.lists);
+  const listsInBoard = useSelector((state) => state.lists.data);
+  const errorMessage = useSelector(
+    (state) => state.lists.errorMessage
+  );
+  const loading = useSelector((state) => state.lists.isLoading);
 
   const dispatch = useDispatch();
 
@@ -42,8 +46,7 @@ function BoardDisplay() {
       // getting the boards in the list.
       getListsInABoard(id)
         .then((listsData) => {
-          // setListsInBoard(listsData);
-          dispatch(setListInBoard(listsData));
+          dispatch(setListInBoard({ data: listsData }));
           return getBoardDetails(id);
         })
         .then((boardDetailsData) => {
@@ -51,17 +54,20 @@ function BoardDisplay() {
         })
         .catch((error) => {
           console.error('Error while fetching data:', error);
-          setError(
-            'Error while fetching lists in a board, Please try again..'
+          dispatch(
+            setErrorMessage(
+              `${error} while fetching lists in a board, Please try again..`
+            )
           );
         })
         .finally(() => {
-          setLoading(false);
+          dispatch(setLoading(false));
         });
     }
 
     fetchData();
-  }, [id, dispatch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleCreateNewList() {
     setIsAddingList(true);
@@ -76,7 +82,7 @@ function BoardDisplay() {
       .then((data) => dispatch(addListToBoard(data)))
       .catch((err) => {
         console.log('Error while creating the list', err);
-        setError('Error while creating the list');
+        dispatch(setErrorMessage(`${err} while creating the list`));
       });
   }
 
@@ -88,16 +94,18 @@ function BoardDisplay() {
       })
       .catch((error) => {
         console.error('Error while archiving the list', error);
-        setError(
-          'Error while archiving the list, please try again..'
+        dispatch(
+          setErrorMessage(
+            `${error} while archiving the list, please try again..`
+          )
         );
       });
   }
 
-  if (error !== null) {
+  if (errorMessage) {
     return (
       <Alert variant="filled" severity="error">
-        {error}
+        {errorMessage}
       </Alert>
     );
   }
