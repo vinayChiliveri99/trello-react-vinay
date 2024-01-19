@@ -1,21 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = { data: {} };
+const initialState = { data: {}, errorMessage: null };
 
 const cardsSlice = createSlice({
   name: 'cards',
   initialState,
   reducers: {
     setCardsInList: (state, action) => {
-      //   console.log(action.payload.data);
       state.data = {
         ...state.data,
         [action.payload.id]: action.payload.data,
       };
     },
     addCard: (state, action) => {
-      // console.log(state.data[action.payload.id]);
-      // console.log(action.payload.data);
       state.data = {
         ...state.data,
         [action.payload.id]: [
@@ -32,9 +29,16 @@ const cardsSlice = createSlice({
       );
       state.data[action.payload.listId] = temp;
     },
+    setErrorMessage: (state, action) => {
+      state.errorMessage = action.payload;
+    },
   },
 });
 
 export default cardsSlice.reducer;
-export const { setCardsInList, addCard, archiveCardInList } =
-  cardsSlice.actions;
+export const {
+  setCardsInList,
+  addCard,
+  archiveCardInList,
+  setErrorMessage,
+} = cardsSlice.actions;

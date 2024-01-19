@@ -11,15 +11,20 @@ import ArchivePopOver from './ArchivePopOver';
 import AllCards from './AllCards';
 import AddCard from './AddCard';
 import { fetchCardsList } from '../API';
-import { setCardsInList } from '../app/slices/cardsSlice';
-import { useDispatch } from 'react-redux';
+import {
+  setCardsInList,
+  setErrorMessage,
+} from '../app/slices/cardsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 function BoardList(props) {
   const { ele, handleArchive } = props;
   const [anchorEl, setAnchorEl] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const dispatch = useDispatch();
+  const errorMessage = useSelector(
+    (state) => state.cards.errorMessage
+  );
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,13 +39,14 @@ function BoardList(props) {
     const fetchData = () => {
       fetchCardsList(ele.id)
         .then((data) => {
-          // setIndCardsList(data);
           dispatch(setCardsInList({ id: ele.id, data: data }));
         })
         .catch((error) => {
           console.log('error while setting cards data', error);
-          setErrorMessage(
-            'Error while getting the cards data of a list'
+          dispatch(
+            setErrorMessage(
+              `${error} while getting the cards data of a list`
+            )
           );
         });
     };
@@ -55,7 +61,7 @@ function BoardList(props) {
     borderRadius: '10px',
   };
 
-  if (errorMessage !== null) {
+  if (errorMessage) {
     return <Alert severity="error">{errorMessage}</Alert>;
   }
 
