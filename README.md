@@ -43,5 +43,5 @@ To get started with this project, you will need to generate an API key from Trel
 
 **To run the app in development mode:**
 
-    ```bash
-    npm start
+   ```bash
+    npm run dev
